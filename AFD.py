@@ -23,3 +23,26 @@ class AFD():
         return self.estado
     def setEstado(self,estado):
         self.estado = estado
+    
+    def getAlfabeto(self):
+        return self.alfabeto
+    def setAlfabeto(self,alfabeto):
+        self.alfabeto = alfabeto
+
+    def getEstadoInicial(self):
+        return self.estadoInicial
+    def setEstadoInicial(self,estadoInicial):
+        self.estadoInicial = estadoInicial
+    
+    def getEstadosDeAceptacion(self):
+        return self.estadosAceptacion
+    def setEstadosDeAceptacion(self,estadosAceptacion):
+        self.estadosAceptacion = estadosAceptacion
+    
+    def getTrancisiones(self):
+        return self.trancisiones
+    def setTrancisiones(self,trancisiones):
+        self.trancisiones = trancisiones
+         
+    
+    

@@ -23,9 +23,6 @@ def pushButton():
             Menu.menuMain()
             break
         else:
-            os.system("cls")
-            print("Presione Enter para continuar")
-            print("")
             caratula()
 
 caratula()
