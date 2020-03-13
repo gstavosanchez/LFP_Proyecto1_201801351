@@ -63,19 +63,26 @@ def menuAFD():
                 opcion = opcion.strip()
                 if opcion == "1":
                     os.system("cls")
-                    ManejadorAFD.setEstados(nombre)
+                    ManejadorAFD.setEstadosUpdate(nombre)
                 elif opcion == "2":
                     os.system("cls")
+                    ManejadorAFD.setAlfabeto(nombre)
                 elif opcion =="3":
                     os.system("cls")
+                    ManejadorAFD.setEstadoInicialAFD(nombre)
                 elif opcion == "4":
                     os.system("cls")
+                    ManejadorAFD.setEstadoAceptacionAFD(nombre)
                 elif opcion == "5":
                     os.system("cls")
+                    menuTransicion(nombre)
                 elif opcion == "6":
                     os.system("cls")
                     ManejadorAFD.helpCaratula()
                     ManejadorAFD.help()
+                elif opcion == "ver":
+                    os.system("cls")
+                    ManejadorAFD.getAFD(nombre)
                 elif opcion.lower() == "salir":
                     os.system("cls")
                     break
@@ -106,19 +113,26 @@ def menuAFD():
                     opcion = opcion.strip()
                     if opcion == "1":
                         os.system("cls")
-                        ManejadorAFD.setEstados(nombre)
+                        ManejadorAFD.setEstadosUpdate(nombre)
                     elif opcion == "2":
                         os.system("cls")
+                        ManejadorAFD.setAlfabeto(nombre)
                     elif opcion =="3":
                         os.system("cls")
+                        ManejadorAFD.setEstadoInicialAFD(nombre)
                     elif opcion == "4":
                         os.system("cls")
+                        ManejadorAFD.setEstadoAceptacionAFD(nombre)
                     elif opcion == "5":
                         os.system("cls")
+                        menuTransicion(nombre)
                     elif opcion == "6":
                         os.system("cls")
                         ManejadorAFD.helpCaratula()
                         ManejadorAFD.help()
+                    elif opcion == "ver":
+                        os.system("cls")
+                        ManejadorAFD.getAFD(nombre)
                     elif opcion.lower() == "salir":
                         os.system("cls")
                         break
@@ -126,3 +140,29 @@ def menuAFD():
                         os.system("cls")
         else:
             menuAFD()
+
+
+def menuTransicion(nombre):
+    while True:
+        print("-------------------Menu Transiciones-------------------")
+        print("|                                                     |")
+        print("| 1.Modo No.1                                         |")
+        print("| 2.Modo No.2                                         |")
+        print("|   SALIR                                             |")
+        print("|                                                     |")
+        print("-------------------------------------------------------")
+        print("")
+        print(">> ",end="")
+        opcion = input()
+        opcion = opcion.strip()
+        if opcion == "1":
+            os.system("cls")
+            ManejadorAFD.modoUnoTrancision(nombre)
+        elif opcion == "2":
+            os.system("cls")
+            ManejadorAFD.modoDosTrasiciones(nombre)
+        elif opcion.lower()== "salir":
+            os.system("cls")
+            break
+        else:
+            os.system("cls")
