@@ -1,5 +1,6 @@
 import os
 import ManejadorAFD
+import ManejadorGramatica
 def menuMain():
     while True:
         print("-------------------Menu Principal----------------------")
@@ -20,7 +21,8 @@ def menuMain():
             os.system("cls")
             menuAFD()
         elif opcion == "2":
-            pass
+            os.system("cls")
+            menuGramatica()
         elif opcion =="3":
             pass
         elif opcion == "4":
@@ -166,3 +168,101 @@ def menuTransicion(nombre):
             break
         else:
             os.system("cls")
+
+def setNombreGramatica():
+    print("Ingrese el nombre la Gramatica")
+    print(">> ",end="")
+    nombre = input()
+    nombre = nombre.strip()
+    os.system("cls")
+    return nombre
+
+def menuGramatica():
+    nombre = setNombreGramatica()
+    if nombre != "update":
+        if ManejadorGramatica.newGramatica(nombre) == True:
+            while True:
+                print("---------------------Menu Gramatica--------------------")
+                print("|                                                     |")
+                print("| 1.Ingresar NT                                       |")
+                print("| 2.Ingresar Terminales                               |")
+                print("| 3.NT Inicial                                        |")
+                print("| 4.Producciones                                      |")
+                print("| 5.Mostar gramatica y Transformada                   |")
+                print("| 6.Ayuda                                             |")
+                print("|   SALIR                                             |")
+                print("|                                                     |")
+                print("-------------------------------------------------------")
+                print("")
+                print(">> ",end="")
+                opcion = input()
+                opcion = opcion.strip()
+                if opcion == "1":
+                    os.system("cls")
+                    ManejadorGramatica.setNewNoTerminal(nombre)
+                elif opcion == "2":
+                    os.system("cls")
+                    ManejadorGramatica.setNewTerminal(nombre)
+                elif opcion == "3":
+                    pass
+                elif opcion == "4":
+                    pass
+                elif opcion == "5":
+                    pass
+                elif opcion == "6":
+                    pass
+                elif opcion == "ver":
+                    os.system("cls")
+                    ManejadorGramatica.getGrammar(nombre)
+                elif opcion.lower() == "salir":
+                    os.system("cls")
+                    break
+                else:
+                    os.system("cls")
+        else:
+            menuMain()
+    else:
+        nombre = setNombreGramatica()
+        nombre = nombre.strip()
+        buscado = ManejadorGramatica.searchGrammar(nombre)
+        if buscado != None:
+            while True:
+                print("---------------Menu Gramatica UPDATE------------------")
+                print("|                                                     |")
+                print("| 1.Ingresar NT                                       |")
+                print("| 2.Ingresar Terminales                               |")
+                print("| 3.NT Inicial                                        |")
+                print("| 4.Producciones                                      |")
+                print("| 5.Mostar gramatica y Transformada                   |")
+                print("| 6.Ayuda                                             |")
+                print("|   SALIR                                             |")
+                print("|                                                     |")
+                print("-------------------------------------------------------")
+                print("")
+                print(">> ",end="")
+                opcion = input()
+                opcion = opcion.strip()
+                if opcion == "1":
+                    os.system("cls")
+                    ManejadorGramatica.setNewNoTerminal(nombre)
+                elif opcion == "2":
+                    os.system("cls")
+                    ManejadorGramatica.setNewTerminal(nombre)
+                elif opcion == "3":
+                    pass
+                elif opcion == "4":
+                    pass
+                elif opcion == "5":
+                    pass
+                elif opcion == "6":
+                    pass
+                elif opcion.lower() == "ver":
+                    os.system("cls")
+                    ManejadorGramatica.getGrammar(nombre)
+                elif opcion.lower() == "salir":
+                    os.system("cls")
+                    break
+                else:
+                    os.system("cls")
+        else:
+            menuGramatica()
