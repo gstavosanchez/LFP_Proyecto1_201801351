@@ -20,7 +20,7 @@ def alerta(mensaje):
 def newGramatica(name):
     name = name.strip()
     if duplicateData(name) == False:
-        newGrammar = Gramatica(name,[],[],"",[],[])
+        newGrammar = Gramatica(name,[],[],"",{},[])
         listaGramatica.append(newGrammar)
         return True
     else:
@@ -57,6 +57,11 @@ def updateNoTerminal(grammar,listNoTerminal):
 def updateTerminal(grammar,listTerminal):
     grammar.setTerminal(listTerminal)
 
+def updateNTInicial(grammar,parametro):
+    grammar.setInicio(parametro)
+
+def updateProduccion(grammar,diccionario):
+    grammar.setProduccion(diccionario)
 
 def setNewNoTerminal(name):
     name = name.strip()
@@ -115,9 +120,20 @@ def setNewTerminal(name):
 def setNewNTInicial(name):
     name = name.strip()
     grammar = searchGrammar(name)
-    
+    if grammar != None:
+        print("------------------------ALERTA-------------------------")
+        print("| Ingrese datos:                                      |")
+        print("-------------------------------------------------------")
+        print("")
+        print(">> ",end="")
+        parameter = input()
+        parameter = parameter.strip()
+        if duplicateDataInList(parameter,grammar.getNoTerminal()) == True:
+            updateNTInicial(grammar,parameter)
+        else:
+            alerta("No se encontro el estado")
 
-
+        
 
 def getGrammar(name):
     name = name.strip()
@@ -131,3 +147,80 @@ def getGrammar(name):
             print("Gramatica Transformada: ",data.getTransformada())
 
     
+def setNewProduccion(name):
+    name = name.strip()
+    grammar = searchGrammar(name)
+    if grammar != None:
+        x = 1
+        diccionari = {}
+        while True:
+            print("------------------------ALERTA-------------------------")
+            print(f"| Ingrese datos No.{x}                                  |")
+            print("-------------------------------------------------------")
+            print("")
+            print(">> ",end="")
+            parameter = input()
+            parameter = parameter.strip()
+            if parameter.lower() != "salir":
+                key,value = setProduccionInDiccionari(parameter,grammar)
+                if key != None and value != None:
+                    x += 1
+                    diccionari[key] = value
+                    updateProduccion(grammar,diccionari)
+                    os.system("cls")
+            else:
+                os.system("cls")
+                break
+        os.system("cls")
+        updateProduccion(grammar,diccionari)
+        
+
+
+def setProduccionInDiccionari(cadena,grammar):
+    try:
+        cadena = cadena.split(">")
+        noTerminal = cadena[0].strip().upper()
+        parametro = cadena[1]
+        if parametro.lower() != "epsilon":
+            posDos = cadena[1].rstrip()
+            posDos = posDos.split(" ")
+            terminal = posDos[0]
+            noTerminalAndTer = posDos[1]
+            if  duplicateDataInList(noTerminal,grammar.getNoTerminal()) == True and duplicateDataInList(terminal,grammar.getTerminal()) == True and duplicateDataInList(noTerminalAndTer,grammar.getNoTerminal()) == True:
+                listaProduccion = getListDiccionario(grammar,noTerminal.upper().strip())
+                if listaProduccion == None:
+                    listaProduccion = []
+                    listaProduccion.append(parametro.rstrip())
+                    return(noTerminal,listaProduccion)
+                else:
+                    print("Esta en el else")
+                    listaProduccion.append(parametro)
+                    return(noTerminal,listaProduccion)
+            else:
+                alerta("Error en el Terminal o No terminal")
+                return None
+        else:
+            if  duplicateDataInList(noTerminal,grammar.getNoTerminal()) == True:
+                listaProduccion = getListDiccionario(grammar,noTerminal.upper().strip())
+                if listaProduccion == None:
+                    listaProduccion = []
+                    listaProduccion.append(parametro.rstrip())
+                    return(noTerminal,listaProduccion)
+                else:
+                    print("Esta en el else")
+                    listaProduccion.append(parametro)
+                    return(noTerminal,listaProduccion)
+            else:
+                alerta("Error No terminal")
+                return None
+    except IndexError as e:
+        alerta(e)
+        return None
+
+
+def getListDiccionario(grammar,clave):
+    diccionario = grammar.getProduccion()
+    for key,value in diccionario.items():
+        if clave == key:
+            print(value)
+            return value

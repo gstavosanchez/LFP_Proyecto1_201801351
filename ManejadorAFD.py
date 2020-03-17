@@ -15,7 +15,8 @@ def helpCaratula():
     print("| Seccion B                                           |")
     print("| Ing.Zulma                                           |")
     print("| Aux: Luis Javier Yela                               |")
-    print("| Carnet:                                             |")
+    print("| Carnet:*******1                                     |")
+    print("|                                                     |")
     print("-------------------------------------------------------")
 
 def help():

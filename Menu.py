@@ -204,9 +204,11 @@ def menuGramatica():
                     os.system("cls")
                     ManejadorGramatica.setNewTerminal(nombre)
                 elif opcion == "3":
-                    pass
+                    os.system("cls")
+                    ManejadorGramatica.setNewNTInicial(nombre)
                 elif opcion == "4":
-                    pass
+                    os.system("cls")
+                    ManejadorGramatica.setNewProduccion(nombre)
                 elif opcion == "5":
                     pass
                 elif opcion == "6":
@@ -249,9 +251,11 @@ def menuGramatica():
                     os.system("cls")
                     ManejadorGramatica.setNewTerminal(nombre)
                 elif opcion == "3":
-                    pass
+                    os.system("cls")
+                    ManejadorGramatica.setNewNTInicial(nombre)
                 elif opcion == "4":
-                    pass
+                    os.system("cls")
+                    ManejadorGramatica.setNewProduccion(nombre)
                 elif opcion == "5":
                     pass
                 elif opcion == "6":

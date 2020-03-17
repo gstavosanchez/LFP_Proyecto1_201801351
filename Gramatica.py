@@ -3,7 +3,7 @@ class Gramatica():
     noTerminal = []
     terminal = []
     inicio = ""
-    produccion = []
+    produccion = {}
     transformada = []
 
     def __init__(self,nombre,noTerminal,terminal,inicio,produccion,transformada):
