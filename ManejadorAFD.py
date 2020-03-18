@@ -32,7 +32,7 @@ def help():
 def newAFD(nombre):
     nombre = nombre.strip()
     if datosDuplicados(nombre) == False:
-        nuevoAFD = AFD(nombre,[],[],"",[],[])
+        nuevoAFD = AFD(nombre,[],[],"",[],{})
         listaAFD.append(nuevoAFD)
         return True
     else:
@@ -248,7 +248,7 @@ def modoUnoTrancision(nombre):
     nombre = nombre.strip()
     automata  = buscarAFD(nombre)
     x = 1
-    listaTrancision = []
+    listaTrancision = {}
     if automata != None:
         while True:
             print("------------------------ALERTA-------------------------")
@@ -259,35 +259,79 @@ def modoUnoTrancision(nombre):
             aceptacion = input()
             aceptacion = aceptacion.strip()
             if aceptacion != "salir":
-                if analizadorTrancision(automata,aceptacion) == True:
-                    if analizadorSimbolos(listaTrancision,aceptacion) == False: 
-                        listaTrancision.append(aceptacion)
-                        x +=1
-                        os.system("cls")       
+                key,value = analizadorTrancision(automata,aceptacion)
+                if key != None and value != None:
+                    #if analizadoAFN(automata,key,aceptacion) == False: 
+                    listaTrancision[key] = value
+                    x +=1
+                    updateTranciones(automata,listaTrancision)
+                    os.system("cls")       
             else:
                 break
         os.system("cls")
-        updateTranciones(automata,listaTrancision)
+        #updateTranciones(automata,listaTrancision)
 
 def analizadorTrancision(automata,cadena):
     try:
+        ca = cadena
         pos = cadena.split(";")
         estados = pos[0]
         alfabeto = pos[1]
         estados = estados.split(",")
         for valor in estados:
-            if datosDuplicadosEstadosAlfabeto(valor,automata.getEstado()) == False:
-                alerta("No existe el Estado")
-                return False
+            if valor != "-":
+                if datosDuplicadosEstadosAlfabeto(valor,automata.getEstado()) == False:
+                    alerta("No existe el Estado")
+                    return None,None
         for parametro in alfabeto:
             if datosDublicadosAlafabeto(parametro,automata.getAlfabeto()) == False:
                 alerta("No existe el Alfabeto o Terminal")
-                return False
-        return True
+                return None,None
+        listaTransicion = getListDiccionario(automata,estados[0])
+        if listaTransicion == None:
+            listaTransicion = []
+            estdoDos = estados[1]
+            parametro = f"{alfabeto} {estdoDos}"
+            listaTransicion.append(parametro)
+            return(estados[0],listaTransicion)
+        else:
+            if analizadoAFN(automata,estados[0],ca) == False:
+                estdoDos = estados[1]
+                parametro = f"{alfabeto} {estdoDos}"
+                listaTransicion.append(parametro)
+                return(estados[0],listaTransicion)
+            else:
+                return(None,None)
     except IndexError as e:
         alerta(e)
-        return False
+        return None,None
         
+
+def getListDiccionario(automata,clave):
+    diccionario = automata.getTrancisiones()
+    for key,value in diccionario.items():
+        if clave == key:
+            return value
+    return None
+
+
+def analizadoAFN(automata,clave,valor):
+    try:
+        valor = valor.split(";")
+        lista = getListDiccionario(automata,clave)
+        if lista != None:
+            for value in lista:
+                value = value.split(" ")
+                print(value[0])
+                if valor[1] == value[0]:
+                    alerta("Solo es posible con el AFN")
+                    return True
+            return False
+        else:
+            return False
+    except IndexError as e:
+        alerta(e)
+        return True
 
 def analizadorSimbolos(lista,cadena):
     pos = cadena.split(";")
@@ -311,7 +355,10 @@ def modoDosTrasiciones(nombre):
     x = 3
     nombre = nombre.strip()
     automata = buscarAFD(nombre)
-    listaTransicion = []
+    #listaTransicion = []
+    fila = ""
+    columna = ""
+    simbolos = ""
     if automata != None:
         for i in range(x):
             if i == 0:
@@ -323,7 +370,8 @@ def modoDosTrasiciones(nombre):
                 aceptacion = input()
                 aceptacion = aceptacion.strip()
                 if analizadorAlfabetoModoDos(aceptacion,"alfabeto",automata)== True:
-                    listaTransicion.append(aceptacion)
+                    #listaTransicion.append(aceptacion)
+                    fila = aceptacion
                 else :
                     alerta("Intente otra vez")
                     break
@@ -336,7 +384,8 @@ def modoDosTrasiciones(nombre):
                 aceptacion = input()
                 aceptacion = aceptacion.strip()
                 if analizadorAlfabetoModoDos(aceptacion,"estado",automata) == True:
-                    listaTransicion.append(aceptacion)
+                    #listaTransicion.append(aceptacion)
+                    columna = aceptacion
                 else:
                     break
             elif i == 2:
@@ -348,10 +397,14 @@ def modoDosTrasiciones(nombre):
                 aceptacion = input()
                 aceptacion = aceptacion.strip()
                 if analizadorEstadoDestino(aceptacion,automata) == True:
-                    listaTransicion.append(aceptacion)
-                    updateTranciones(automata,listaTransicion)
+                    #listaTransicion.append(aceptacion)
+                    #updateTranciones(automata,listaTransicion)
                     os.system("cls")
-
+                    simbolos = aceptacion
+                    if transformarLista(fila,columna,simbolos,automata) == True:
+                        os.system("cls")
+                    else:
+                        break
                 else:
                     break
         
@@ -392,4 +445,45 @@ def analizadorEstadoDestino(cadena,automata):
                         return False
         return True
     except IndexError as e:
+        return False
+
+
+def transformarLista(listaColumnas,listaFilas,listaSimbolos,automata):
+    try:
+        diccionario = {}
+        listaColumnas = listaColumnas.replace("[","")
+        listaColumnas = listaColumnas.replace("]","")
+
+        listaFilas = listaFilas.replace("[","")
+        listaFilas = listaFilas.replace("]","")
+
+        listaSimbolos = listaSimbolos.replace("[","")
+        listaSimbolos = listaSimbolos.replace("]","")
+
+        listaColumnas = listaColumnas.split(",")
+        listaFilas = listaFilas.split(",")
+        listaSimbolos = listaSimbolos.split(";")
+        
+        for i in range(len(listaSimbolos)):
+            #print("-----------------------------------------------------------------")
+            #print("Simbolos:",listaSimbolos[i]," Filas:",listaFilas[i])
+            lista = listaSimbolos[i]
+            lista = lista.split(",")
+            for x in range(len(lista)):
+                #print("Filas:",listaFilas[i]," Simbolos:",lista[x]," Columnas:",listaColumnas[x])
+                #print("De:",listaFilas[i]," con:",listaColumnas[x]," Hacia:",lista[x])
+                de = listaFilas[i]
+                con = listaColumnas[x]
+                hacia = lista[x]
+                cadena = f"{de},{hacia};{con}"
+                #print(cadena)
+                keys,valores = analizadorTrancision(automata,cadena)
+                if keys != None and valores != None:
+                    diccionario[keys] = valores
+                    updateTranciones(automata,diccionario)
+                else:
+                    return False
+        return True    
+    except IndexError as e:
+        alerta(e)
         return False

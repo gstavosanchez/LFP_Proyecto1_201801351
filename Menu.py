@@ -270,3 +270,7 @@ def menuGramatica():
                     os.system("cls")
         else:
             menuGramatica()
+
+
+def menuEvaluarCadena():
+    pass

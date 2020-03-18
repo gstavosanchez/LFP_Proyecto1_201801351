@@ -4,7 +4,7 @@ class AFD():
     alfabeto =[]
     estadoInicial = ""
     estadosAceptacion = []
-    trancisiones = []
+    trancisiones = {}
 
     def __init__(self,nombre,estado,alfabeto,estadoInicial,estadosAceptacion,trancisiones):
         self.nombre = nombre
