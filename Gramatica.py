@@ -5,14 +5,16 @@ class Gramatica():
     inicio = ""
     produccion = {}
     transformada = []
+    estadosAceptacion = [] 
 
-    def __init__(self,nombre,noTerminal,terminal,inicio,produccion,transformada):
+    def __init__(self,nombre,noTerminal,terminal,inicio,produccion,transformada,estadosAceptacion):
         self.nombre = nombre
         self.noTerminal = noTerminal
         self.terminal = terminal
         self.inicio = inicio
         self.produccion = produccion
         self.transformada = transformada
+        self.estadosAceptacion = estadosAceptacion
 
     def getNombre(self):
         return self.nombre
@@ -43,3 +45,8 @@ class Gramatica():
         return self.transformada
     def setTransformada(self,transformada):
         self.transformada = transformada
+        
+    def getEstadosAceptacion(self):
+        return self.estadosAceptacion
+    def setEstadosAceptacion(self,estadosAceptacion):
+        self.estadosAceptacion = estadosAceptacion

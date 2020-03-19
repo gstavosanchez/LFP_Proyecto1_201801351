@@ -20,7 +20,7 @@ def alerta(mensaje):
 def newGramatica(name):
     name = name.strip()
     if duplicateData(name) == False:
-        newGrammar = Gramatica(name,[],[],"",{},[])
+        newGrammar = Gramatica(name,[],[],"",{},[],[])
         listaGramatica.append(newGrammar)
         return True
     else:
@@ -62,6 +62,9 @@ def updateNTInicial(grammar,parametro):
 
 def updateProduccion(grammar,diccionario):
     grammar.setProduccion(diccionario)
+
+def updateAceptacion(grammar,lisAceptacion):
+    grammar.setEstadosAceptacion(lisAceptacion)
 
 def setNewNoTerminal(name):
     name = name.strip()
@@ -130,6 +133,7 @@ def setNewNTInicial(name):
         parameter = parameter.strip()
         if duplicateDataInList(parameter,grammar.getNoTerminal()) == True:
             updateNTInicial(grammar,parameter)
+            os.system("cls")
         else:
             alerta("No se encontro el estado")
 
@@ -145,6 +149,7 @@ def getGrammar(name):
             print("Terminal: ",data.getTerminal())
             print("Producciones: ",data.getProduccion())
             print("Gramatica Transformada: ",data.getTransformada())
+            print("Estados Aceptacion: ",data.getEstadosAceptacion())
 
     
 def setNewProduccion(name):
@@ -173,7 +178,9 @@ def setNewProduccion(name):
                 break
         os.system("cls")
         updateProduccion(grammar,diccionari)
+        setEstadoAceptacionDic(grammar,diccionari)
         
+
 
 
 def setProduccionInDiccionari(cadena,grammar):
@@ -222,5 +229,15 @@ def getListDiccionario(grammar,clave):
     diccionario = grammar.getProduccion()
     for key,value in diccionario.items():
         if clave == key:
-            print(value)
+            #print(value)
             return value
+        
+def setEstadoAceptacionDic(grammar,diccionario):
+    lista = []
+    for key,value in diccionario.items():
+        for valores in value:
+            if valores == "epsilon":
+                lista.append(key.strip())
+    updateAceptacion(grammar,lista)
+    
+    
