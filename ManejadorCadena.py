@@ -169,7 +169,7 @@ def validateCadena(name,soloValidar,forma):
                 alertaExito(cade,todo)
             else:
                 alertaError("Falta elmentos del AFD")           
-        elif tipo == "automata" and forma == "gramatica":
+        elif tipo == "automata" and forma == "grammar":
             estadoInicial = objeto.getEstadoInicial()
             estadoInicial = estadoInicial.strip()
             estadosAceptacion = objeto.getEstadosDeAceptacion()
@@ -179,31 +179,91 @@ def validateCadena(name,soloValidar,forma):
             agrupacion = ""
             primerTexto = ""
             segundoTexto = ""
+            condicion = ""
+            eps = ""
             if estadoInicial != None and estadosAceptacion != None and listaIncial != None:
                 for i in range(len(cadena)):
                     valor = ""
                     if i == 0:
-                        valor = getEstadoCadena(cadena[i],listaIncial)
-                        destino = valor.split(" ")
-                        con = destino[0]
-                        destino = destino[1]
-                        agrupacion += f"{con}"
-                        letra = destino
-                        primerTexto = f"{texto} --> {agrupacion} {destino} --> "
-                    else:
-                        inicio = letra
-                        lista = ManejadorAFD.getListDiccionario(objeto,inicio)
-                        valor = getEstadoCadena(cadena[i],lista)
-                        if valor != None:
+                        if i != len(cadena) - 1:
+                            valor = getEstadoCadena(cadena[i],listaIncial)
                             destino = valor.split(" ")
                             con = destino[0]
-                            agrupacion += f"{con}"
                             destino = destino[1]
+                            agrupacion += f"{con}"
                             letra = destino
-                            segundoTexto += "%s %s --> "%(agrupacion,destino)
-                print("Ruta en Gramatica: ",primerTexto,segundoTexto)
+                            primerTexto = f"{texto} --> {agrupacion} {destino} --> "
+                        else:
+                            valor = getEstadoCadena(cadena[i],listaIncial)
+                            destino = valor.split(" ")
+                            con = destino[0]
+                            destino = destino[1]
+                            agrupacion += f"{con}"
+                            letra = destino
+                            primerTexto = f"{texto} --> {agrupacion} {destino} --> "                            
+                            if soloValidar == "validar":
+                                if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                    eps = "epsilon"
+                                    condicion = f"{cade}({eps})-->{cade} Valida"  
+                                    alertaExito(cade,">> Valida")
+                                    return True
+                                else:
+                                    condicion = f"{cade}({letra})-->{cade} No Valida"
+                                    alertaExito(cade,">> No Valida")
+                                    return True
+                            else:                                
+                                if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                    eps = "epsilon"
+                                    condicion = f"{cade}({eps})-->{cade} Valida"  
+                                else:
+                                    condicion = f"{cade}({letra})-->{cade} No Valida"
+                    else:
+                        if i != len(cadena) - 1 :
+                            inicio = letra
+                            lista = ManejadorAFD.getListDiccionario(objeto,inicio)
+                            valor = getEstadoCadena(cadena[i],lista)
+                            if valor != None:
+                                destino = valor.split(" ")
+                                con = destino[0]
+                                agrupacion += f"{con}"
+                                destino = destino[1]
+                                letra = destino
+                                segundoTexto += "%s %s --> "%(agrupacion,destino)
+                        else:
+                            inicio = letra
+                            lista = ManejadorAFD.getListDiccionario(objeto,inicio)
+                            valor = getEstadoCadena(cadena[i],lista)
+                            if valor != None:
+                                destino = valor.split(" ")
+                                con = destino[0]
+                                agrupacion += f"{con}"
+                                destino = destino[1]
+                                letra = destino
+                                segundoTexto += "%s %s --> "%(agrupacion,destino)
+                                
+                                if soloValidar == "validar":
+                                    if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                        eps = "epsilon"
+                                        condicion = f"{cade}({eps})-->{cade} Valida"  
+                                        alertaExito(cade,">> Valida")
+                                        return True
+                                    else:
+                                        condicion = f"{cade}({letra})-->{cade} No Valida"
+                                        alertaExito(cade,">> No Valida")
+                                        return True
+                                else:                                
+                                    if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                        eps = "epsilon"
+                                        condicion = f"{cade}({eps})-->{cade} Valida"  
+                                    else:
+                                        condicion = f"{cade}({letra})-->{cade} No Valida"
+                    #print("Ruta en Gramatica: ",primerTexto,segundoTexto,condicion)
+                    todo = f"Expansion en Gramatica: {primerTexto}{segundoTexto}{condicion}"
+                    alertaExito(cade,todo)
             else:
                 alertaError("Falta elmentos del AFD")
+        elif tipo == "grammar" and forma == "grammar":
+            pass
                 
    
   
