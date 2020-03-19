@@ -303,7 +303,7 @@ def menuEvaluarCadena():
             opcion = opcion.strip()
             if opcion == "1":
                 os.system("cls")
-                ManejadorCadena.validateCadena(nombre,"validar")
+                ManejadorCadena.validateCadena(nombre,"validar","gramatica")
             elif opcion == "2":
                 os.system("cls")
             elif opcion == "3":

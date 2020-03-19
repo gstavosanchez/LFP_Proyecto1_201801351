@@ -74,7 +74,7 @@ def getCadena():
 def getLetra(self):
     return self.letra
     
-def validateCadena(name,soloValidar):
+def validateCadena(name,soloValidar,forma):
     cadena = getCadena()
     cade = cadena
     name = name.strip()
@@ -82,7 +82,7 @@ def validateCadena(name,soloValidar):
     condicion = ""
     tipo,objeto = getObjet(name)
     if tipo != None and objeto != None:
-        if tipo == "automata":
+        if tipo == "automata" and forma == "automata":
             estadoInicial = objeto.getEstadoInicial()
             estadoInicial = estadoInicial.strip()
             estadosAceptacion = objeto.getEstadosDeAceptacion()
@@ -169,8 +169,42 @@ def validateCadena(name,soloValidar):
                 alertaExito(cade,todo)
             else:
                 alertaError("Falta elmentos del AFD")           
-        elif tipo == "grammar":
-            pass
+        elif tipo == "automata" and forma == "gramatica":
+            estadoInicial = objeto.getEstadoInicial()
+            estadoInicial = estadoInicial.strip()
+            estadosAceptacion = objeto.getEstadosDeAceptacion()
+            listaIncial = ManejadorAFD.getListDiccionario(objeto,estadoInicial)
+            texto = estadoInicial
+            listaTrancion = objeto.getTrancisiones()
+            agrupacion = ""
+            primerTexto = ""
+            segundoTexto = ""
+            if estadoInicial != None and estadosAceptacion != None and listaIncial != None:
+                for i in range(len(cadena)):
+                    valor = ""
+                    if i == 0:
+                        valor = getEstadoCadena(cadena[i],listaIncial)
+                        destino = valor.split(" ")
+                        con = destino[0]
+                        destino = destino[1]
+                        agrupacion += f"{con}"
+                        letra = destino
+                        primerTexto = f"{texto} --> {agrupacion} {destino} --> "
+                    else:
+                        inicio = letra
+                        lista = ManejadorAFD.getListDiccionario(objeto,inicio)
+                        valor = getEstadoCadena(cadena[i],lista)
+                        if valor != None:
+                            destino = valor.split(" ")
+                            con = destino[0]
+                            agrupacion += f"{con}"
+                            destino = destino[1]
+                            letra = destino
+                            segundoTexto += "%s %s --> "%(agrupacion,destino)
+                print("Ruta en Gramatica: ",primerTexto,segundoTexto)
+            else:
+                alertaError("Falta elmentos del AFD")
+                
    
   
   
