@@ -1,6 +1,7 @@
 import os
 import ManejadorAFD
 import ManejadorGramatica
+import ManejadorCadena
 def menuMain():
     while True:
         print("-------------------Menu Principal----------------------")
@@ -24,12 +25,14 @@ def menuMain():
             os.system("cls")
             menuGramatica()
         elif opcion =="3":
-            pass
+            os.system("cls")
+            menuEvaluarCadena()
         elif opcion == "4":
-            pass
+            os.system("cls")
         elif opcion == "5":
-            pass
+            os.system("cls")
         elif opcion.lower() == "salir":
+            os.system("cls")
             break
         else:
             os.system("cls")
@@ -272,5 +275,47 @@ def menuGramatica():
             menuGramatica()
 
 
+def setNombreGramaticaAFD():
+    print("Ingrese el nombre la Gramatica o AFD")
+    print(">> ",end="")
+    nombre = input()
+    nombre = nombre.strip()
+    os.system("cls")
+    return nombre
+
+
 def menuEvaluarCadena():
-    pass
+    nombre = setNombreGramaticaAFD()
+    if ManejadorCadena.existAFDGramatica(nombre) == True:
+        while True:
+            print("-----------------Menu Evaluar Cadena-------------------")
+            print("|                                                     |")
+            print("| 1.Solo Validar                                      |")
+            print("| 2.Ruta en AFD                                       |")
+            print("| 3.Expandir con Gramatica                            |")
+            print("| 4.Ayuda                                             |")
+            print("|   SALIR                                             |")
+            print("|                                                     |")
+            print("-------------------------------------------------------")
+            print("")
+            print(">> ",end="")
+            opcion = input()
+            opcion = opcion.strip()
+            if opcion == "1":
+                os.system("cls")
+                ManejadorCadena.validateCadena(nombre,"validar")
+            elif opcion == "2":
+                os.system("cls")
+            elif opcion == "3":
+                os.system("cls")
+            elif opcion == "4":
+                os.system("cls")
+            elif opcion.lower() == "salir":
+                os.system("cls")
+                break
+            else:
+                os.system("cls")
+    else:
+        menuMain()
+        
+    
