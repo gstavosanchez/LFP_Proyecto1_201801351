@@ -2,6 +2,7 @@ import os
 import ManejadorAFD
 import ManejadorGramatica
 import ManejadorCadena
+import ManejadorArchivo
 def menuMain():
     while True:
         print("-------------------Menu Principal----------------------")
@@ -31,9 +32,17 @@ def menuMain():
             os.system("cls")
         elif opcion == "5":
             os.system("cls")
+            menuArchivo()
         elif opcion.lower() == "salir":
             os.system("cls")
-            break
+            print("¿Seguro que desea Salir ?")
+            print(">> ",end="")
+            op = input()
+            op = op.strip()
+            if op.lower() == "si":
+                break
+            else:
+                os.system("cls")
         else:
             os.system("cls")
 
@@ -321,4 +330,26 @@ def menuEvaluarCadena():
     else:
         menuMain()
         
-    
+def menuArchivo():
+    while True:
+        print("-----------------Menu Cargar Archivo-------------------")
+        print("|                                                     |")
+        print("| 1.AFD                                               |")
+        print("| 2.Gramatica                                         |")
+        print("|   SALIR                                             |")
+        print("|                                                     |")
+        print("-------------------------------------------------------")
+        print("")
+        print(">> ",end="")
+        opcion = input()
+        opcion = opcion.strip()
+        if opcion == "1":
+            os.system("cls")
+            ManejadorArchivo.readArchivo()
+        elif opcion == "2":
+            os.system("cls")
+        elif opcion.lower() == "salir":
+            os.system("cls")
+            break
+        else:
+            os.system("cls")

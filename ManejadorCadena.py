@@ -75,6 +75,10 @@ def getLetra(self):
     return self.letra
     
 def validateCadena(name,soloValidar,forma):
+    try:
+        pass
+    except IndexError as e:
+        alertaError(e)
     cadena = getCadena()
     cade = cadena
     name = name.strip()
