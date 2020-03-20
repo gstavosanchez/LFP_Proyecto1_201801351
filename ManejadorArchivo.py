@@ -114,6 +114,7 @@ def transformarAgregarTranciones(cadena,automata):
     if key != None and value != None:
         diccionario[key] = value
         ManejadorAFD.updateTranciones(automata,diccionario)
+        os.system("cls")
     else:
         alertaError("No se gurardo la Trancision")
     

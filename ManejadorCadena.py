@@ -76,378 +76,387 @@ def getLetra(self):
     
 def validateCadena(name,soloValidar,forma):
     try:
-        pass
+        cadena = getCadena()
+        cade = cadena
+        name = name.strip()
+        text = ""
+        condicion = ""
+        tipo,objeto = getObjet(name)
+        if tipo != None and objeto != None:
+            if tipo == "automata" and forma == "automata":
+                estadoInicial = objeto.getEstadoInicial()
+                estadoInicial = estadoInicial.strip()
+                estadosAceptacion = objeto.getEstadosDeAceptacion()
+                listaIncial = ManejadorAFD.getListDiccionario(objeto,estadoInicial)
+                texto = estadoInicial
+                listaTrancion = objeto.getTrancisiones()
+                textoPrimero = ""
+                if estadoInicial != None and estadosAceptacion != None and listaIncial != None: 
+                    #print(listaTrancion)
+                    #print("Estado de aceptacion:",estadosAceptacion)
+                    #print("---------------------------------------")
+                    for i in range(len(cadena)):
+                        valor = ""
+                        if i == 0:
+                            if i != len(cadena) - 1:
+                                valor = getEstadoCadena(cadena[i],listaIncial)
+                                if valor != None:
+                                    destino = valor.split(" ")
+                                    con = destino[0]
+                                    destino = destino[1]
+                                    letra = destino
+                                    textoPrimero = f"{texto},{destino},{con};"
+                                    #print(textoPrimero)
+                            else:
+                                valor = getEstadoCadena(cadena[i],listaIncial)
+                                if valor != None:
+                                    destino = valor.split(" ")
+                                    con = destino[0]
+                                    destino = destino[1]
+                                    letra = destino
+                                    textoPrimero = f"{texto},{destino},{con};"
+                                    #print(textoPrimero)
+                                    if soloValidar == "validar":
+                                        if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                            condicion = "Valida"
+                                            alertaExito(cade,">> Valida")
+                                            return True
+                                        else:
+                                            condicion = "No Valida"
+                                            alertaExito(cade,">> No Valida")
+                                            return True
+                                    else:
+                                        if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                            condicion = "Valida"
+                                        else:
+                                            condicion = "No Valida"        
+                        else :
+                            if i != len(cadena) - 1 :
+                                #print(f"Valor de inicio en {i} :",letra)
+                                inicio = letra
+                                lista = ManejadorAFD.getListDiccionario(objeto,inicio)
+                                valor = getEstadoCadena(cadena[i],lista)
+                                if valor != None:
+                                    destino = valor.split(" ")
+                                    con = destino[0]
+                                    destino = destino[1]
+                                    letra = destino
+                                    text += '%s,%s,%s; '%(inicio,destino,con)
+                                    #text += f"{inicio},{destino};{con}"
+                            else:
+                                #print(f"Valor de Fin en {i} :",letra)
+                                inicio = letra
+                                lista = ManejadorAFD.getListDiccionario(objeto,inicio)
+                                valor = getEstadoCadena(cadena[i],lista)
+                                if valor != None:
+                                    destino = valor.split(" ")
+                                    con = destino[0]
+                                    destino = destino[1]
+                                    letra = destino
+                                    text += '%s,%s,%s; '%(inicio,destino,con)
+                                    if soloValidar == "validar":
+                                        if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                            condicion = "Valida"
+                                            alertaExito(cade,">> Valida")
+                                            return True
+                                        else:
+                                            condicion = "No Valida"
+                                            alertaExito(cade,">> No Valida")
+                                            return True
+                                    else:
+                                        if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                            condicion = "Valida"
+                                        else:
+                                            condicion = "No Valida"
+                    #print("Expansion en gramatica:",textoPrimero,text," ->",condicion)
+                    todo = f"Ruta en AFD: {textoPrimero}{text} --> {condicion}"
+                    alertaExito(cade,todo)
+                else:
+                    alertaError("Falta elmentos del AFD")           
+            elif tipo == "automata" and forma == "grammar":
+                estadoInicial = objeto.getEstadoInicial()
+                estadoInicial = estadoInicial.strip()
+                estadosAceptacion = objeto.getEstadosDeAceptacion()
+                listaIncial = ManejadorAFD.getListDiccionario(objeto,estadoInicial)
+                texto = estadoInicial
+                listaTrancion = objeto.getTrancisiones()
+                agrupacion = ""
+                primerTexto = ""
+                segundoTexto = ""
+                condicion = ""
+                eps = ""
+                if estadoInicial != None and estadosAceptacion != None and listaIncial != None:
+                    for i in range(len(cadena)):
+                        valor = ""
+                        if i == 0:
+                            if i != len(cadena) - 1:
+                                valor = getEstadoCadena(cadena[i],listaIncial)
+                                if valor != None:
+                                    destino = valor.split(" ")
+                                    con = destino[0]
+                                    destino = destino[1]
+                                    agrupacion += f"{con}"
+                                    letra = destino
+                                    primerTexto = f"{texto} --> {agrupacion} {destino} --> "
+                            else:
+                                valor = getEstadoCadena(cadena[i],listaIncial)
+                                if valor != None:
+                                    destino = valor.split(" ")
+                                    con = destino[0]
+                                    destino = destino[1]
+                                    agrupacion += f"{con}"
+                                    letra = destino
+                                    primerTexto = f"{texto} --> {agrupacion} {destino} --> "                            
+                                    if soloValidar == "validar":
+                                        if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                            eps = "epsilon"
+                                            condicion = f"{cade}({eps})-->{cade} Valida"  
+                                            alertaExito(cade,">> Valida")
+                                            return True
+                                        else:
+                                            condicion = f"{cade}({letra})-->{cade} No Valida"
+                                            alertaExito(cade,">> No Valida")
+                                            return True
+                                    else:                                
+                                        if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                            eps = "epsilon"
+                                            condicion = f"{cade}({eps})-->{cade} Valida"  
+                                        else:
+                                            condicion = f"{cade}({letra})-->{cade} No Valida"
+                        else:
+                            if i != len(cadena) - 1 :
+                                inicio = letra
+                                lista = ManejadorAFD.getListDiccionario(objeto,inicio)
+                                valor = getEstadoCadena(cadena[i],lista)
+                                if valor != None:
+                                    destino = valor.split(" ")
+                                    con = destino[0]
+                                    agrupacion += f"{con}"
+                                    destino = destino[1]
+                                    letra = destino
+                                    segundoTexto += "%s %s --> "%(agrupacion,destino)
+                            else:
+                                inicio = letra
+                                lista = ManejadorAFD.getListDiccionario(objeto,inicio)
+                                valor = getEstadoCadena(cadena[i],lista)
+                                if valor != None:
+                                    destino = valor.split(" ")
+                                    con = destino[0]
+                                    agrupacion += f"{con}"
+                                    destino = destino[1]
+                                    letra = destino
+                                    segundoTexto += "%s %s --> "%(agrupacion,destino)
+                                    
+                                    if soloValidar == "validar":
+                                        if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                            eps = "epsilon"
+                                            condicion = f"{cade}({eps})-->{cade} Valida"  
+                                            alertaExito(cade,">> Valida")
+                                            return True
+                                        else:
+                                            condicion = f"{cade}({letra})-->{cade} No Valida"
+                                            alertaExito(cade,">> No Valida")
+                                            return True
+                                    else:                                
+                                        if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                            eps = "epsilon"
+                                            condicion = f"{cade}({eps})-->{cade} Valida"  
+                                        else:
+                                            condicion = f"{cade}({letra})-->{cade} No Valida"
+                        #print("Ruta en Gramatica: ",primerTexto,segundoTexto,condicion)
+                        todo = f"Expansion en Gramatica: {primerTexto}{segundoTexto}{condicion}"
+                        alertaExito(cade,todo)
+                else:
+                    alertaError("Falta elmentos del AFD")
+            elif tipo == "grammar" and forma == "grammar":
+                estadoInicial = objeto.getInicio()
+                estadoInicial = estadoInicial.strip()
+                estadosAceptacion = objeto.getEstadosAceptacion()
+                listaIncial = ManejadorGramatica.getListDiccionario(objeto,estadoInicial)
+                texto = estadoInicial
+                listaTrancion = objeto.getProduccion()
+                agrupacion = ""
+                primerTexto = ""
+                segundoTexto = ""
+                condicion = ""
+                eps = ""
+                if estadoInicial != None and estadosAceptacion != None and listaIncial != None:
+                    for i in range(len(cadena)):
+                        valor = ""
+                        if i == 0:
+                            if i != len(cadena) - 1:
+                                valor = getEstadoCadena(cadena[i],listaIncial)
+                                if valor != None:
+                                    destino = valor.split(" ")
+                                    con = destino[0]
+                                    destino = destino[1]
+                                    agrupacion += f"{con}"
+                                    letra = destino
+                                    primerTexto = f"{texto} --> {agrupacion} {destino} --> "
+                            else:
+                                valor = getEstadoCadena(cadena[i],listaIncial)
+                                if valor != None:
+                                    destino = valor.split(" ")
+                                    con = destino[0]
+                                    destino = destino[1]
+                                    agrupacion += f"{con}"
+                                    letra = destino
+                                    primerTexto = f"{texto} --> {agrupacion} {destino} --> "                            
+                                    if soloValidar == "validar":
+                                        if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                            eps = "epsilon"
+                                            condicion = f"{cade}({eps})-->{cade} Valida"  
+                                            alertaExito(cade,">> Valida")
+                                            return True
+                                        else:
+                                            condicion = f"{cade}({letra})-->{cade} No Valida"
+                                            alertaExito(cade,">> No Valida")
+                                            return True
+                                    else:                                
+                                        if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                            eps = "epsilon"
+                                            condicion = f"{cade}({eps})-->{cade} Valida"  
+                                        else:
+                                            condicion = f"{cade}({letra})-->{cade} No Valida"
+                        else:
+                            if i != len(cadena) - 1 :
+                                inicio = letra
+                                lista = ManejadorGramatica.getListDiccionario(objeto,inicio)
+                                valor = getEstadoCadena(cadena[i],lista)
+                                if valor != None:
+                                    destino = valor.split(" ")
+                                    con = destino[0]
+                                    agrupacion += f"{con}"
+                                    destino = destino[1]
+                                    letra = destino
+                                    segundoTexto += "%s %s --> "%(agrupacion,destino)
+                            else:
+                                inicio = letra
+                                lista = ManejadorGramatica.getListDiccionario(objeto,inicio)
+                                valor = getEstadoCadena(cadena[i],lista)
+                                if valor != None:
+                                    destino = valor.split(" ")
+                                    con = destino[0]
+                                    agrupacion += f"{con}"
+                                    destino = destino[1]
+                                    letra = destino
+                                    segundoTexto += "%s %s --> "%(agrupacion,destino)
+                                    
+                                    if soloValidar == "validar":
+                                        if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                            eps = "epsilon"
+                                            condicion = f"{cade}({eps})-->{cade} Valida"  
+                                            alertaExito(cade,">> Valida")
+                                            return True
+                                        else:
+                                            condicion = f"{cade}({letra})-->{cade} No Valida"
+                                            alertaExito(cade,">> No Valida")
+                                            return True
+                                    else:                                
+                                        if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                            eps = "epsilon"
+                                            condicion = f"{cade}({eps})-->{cade} Valida"  
+                                        else:
+                                            condicion = f"{cade}({letra})-->{cade} No Valida"
+                        #print("Ruta en Gramatica: ",primerTexto,segundoTexto,condicion)
+                        todo = f"Expansion en Gramatica: {primerTexto}{segundoTexto}{condicion}"
+                        alertaExito(cade,todo)
+                else:
+                    alertaError("Falta elmentos del AFD") 
+            elif tipo == "grammar" and forma == "automata":
+                estadoInicial = objeto.getInicio()
+                estadoInicial = estadoInicial.strip()
+                estadosAceptacion = objeto.getEstadosAceptacion()
+                listaIncial = ManejadorGramatica.getListDiccionario(objeto,estadoInicial)
+                texto = estadoInicial
+                listaTrancion = objeto.getProduccion()
+                if estadoInicial != None and estadosAceptacion != None and listaIncial != None: 
+                    #print(listaTrancion)
+                    #print("Estado de aceptacion:",estadosAceptacion)
+                    #print("---------------------------------------")
+                    for i in range(len(cadena)):
+                        valor = ""
+                        if i == 0:
+                            if i != len(cadena) - 1:
+                                valor = getEstadoCadena(cadena[i],listaIncial)
+                                if valor != None:
+                                    destino = valor.split(" ")
+                                    con = destino[0]
+                                    destino = destino[1]
+                                    letra = destino
+                                    textoPrimero = f"{texto},{destino},{con};"
+                                    #print(textoPrimero)
+                            else:
+                                valor = getEstadoCadena(cadena[i],listaIncial)
+                                if valor != None:
+                                    destino = valor.split(" ")
+                                    con = destino[0]
+                                    destino = destino[1]
+                                    letra = destino
+                                    textoPrimero = f"{texto},{destino},{con};"
+                                    #print(textoPrimero)
+                                    if soloValidar == "validar":
+                                        if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                            condicion = "Valida"
+                                            alertaExito(cade,">> Valida")
+                                            return True
+                                        else:
+                                            condicion = "No Valida"
+                                            alertaExito(cade,">> No Valida")
+                                            return True
+                                    else:
+                                        if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                            condicion = "Valida"
+                                        else:
+                                            condicion = "No Valida"        
+                        else :
+                            if i != len(cadena) - 1 :
+                                #print(f"Valor de inicio en {i} :",letra)
+                                inicio = letra
+                                lista = ManejadorGramatica.getListDiccionario(objeto,inicio)
+                                valor = getEstadoCadena(cadena[i],lista)
+                                if valor != None:
+                                    destino = valor.split(" ")
+                                    con = destino[0]
+                                    destino = destino[1]
+                                    letra = destino
+                                    text += '%s,%s,%s; '%(inicio,destino,con)
+                                    #text += f"{inicio},{destino};{con}"
+                            else:
+                                #print(f"Valor de Fin en {i} :",letra)
+                                inicio = letra
+                                lista = ManejadorGramatica.getListDiccionario(objeto,inicio)
+                                valor = getEstadoCadena(cadena[i],lista)
+                                if valor != None:
+                                    destino = valor.split(" ")
+                                    con = destino[0]
+                                    destino = destino[1]
+                                    letra = destino
+                                    text += '%s,%s,%s; '%(inicio,destino,con)
+                                    if soloValidar == "validar":
+                                        if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                            condicion = "Valida"
+                                            alertaExito(cade,">> Valida")
+                                            return True
+                                        else:
+                                            condicion = "No Valida"
+                                            alertaExito(cade,">> No Valida")
+                                            return True
+                                    else:
+                                        if getEstadoAceptacion(letra,estadosAceptacion) == True:
+                                            condicion = "Valida"
+                                        else:
+                                            condicion = "No Valida"
+                    #print("Expansion en gramatica:",textoPrimero,text," ->",condicion)
+                    todo = f"Ruta en AFD: {textoPrimero}{text} --> {condicion}"
+                    alertaExito(cade,todo)
+                else:
+                    alertaError("Falta elmentos del AFD")
+        else:
+            alertaError("No se encontro el AFD o la Gramatica")
     except IndexError as e:
         alertaError(e)
-    cadena = getCadena()
-    cade = cadena
-    name = name.strip()
-    text = ""
-    condicion = ""
-    tipo,objeto = getObjet(name)
-    if tipo != None and objeto != None:
-        if tipo == "automata" and forma == "automata":
-            estadoInicial = objeto.getEstadoInicial()
-            estadoInicial = estadoInicial.strip()
-            estadosAceptacion = objeto.getEstadosDeAceptacion()
-            listaIncial = ManejadorAFD.getListDiccionario(objeto,estadoInicial)
-            texto = estadoInicial
-            listaTrancion = objeto.getTrancisiones()
-            if estadoInicial != None and estadosAceptacion != None and listaIncial != None: 
-                #print(listaTrancion)
-                #print("Estado de aceptacion:",estadosAceptacion)
-                #print("---------------------------------------")
-                for i in range(len(cadena)):
-                    valor = ""
-                    if i == 0:
-                        if i != len(cadena) - 1:
-                            valor = getEstadoCadena(cadena[i],listaIncial)
-                            destino = valor.split(" ")
-                            con = destino[0]
-                            destino = destino[1]
-                            letra = destino
-                            textoPrimero = f"{texto},{destino},{con};"
-                            #print(textoPrimero)
-                        else:
-                            valor = getEstadoCadena(cadena[i],listaIncial)
-                            destino = valor.split(" ")
-                            con = destino[0]
-                            destino = destino[1]
-                            letra = destino
-                            textoPrimero = f"{texto},{destino},{con};"
-                            #print(textoPrimero)
-                            if soloValidar == "validar":
-                                if getEstadoAceptacion(letra,estadosAceptacion) == True:
-                                    condicion = "Valida"
-                                    alertaExito(cade,">> Valida")
-                                    return True
-                                else:
-                                    condicion = "No Valida"
-                                    alertaExito(cade,">> No Valida")
-                                    return True
-                            else:
-                                if getEstadoAceptacion(letra,estadosAceptacion) == True:
-                                    condicion = "Valida"
-                                else:
-                                    condicion = "No Valida"        
-                    else :
-                        if i != len(cadena) - 1 :
-                            #print(f"Valor de inicio en {i} :",letra)
-                            inicio = letra
-                            lista = ManejadorAFD.getListDiccionario(objeto,inicio)
-                            valor = getEstadoCadena(cadena[i],lista)
-                            if valor != None:
-                                destino = valor.split(" ")
-                                con = destino[0]
-                                destino = destino[1]
-                                letra = destino
-                                text += '%s,%s,%s; '%(inicio,destino,con)
-                                #text += f"{inicio},{destino};{con}"
-                        else:
-                            #print(f"Valor de Fin en {i} :",letra)
-                            inicio = letra
-                            lista = ManejadorAFD.getListDiccionario(objeto,inicio)
-                            valor = getEstadoCadena(cadena[i],lista)
-                            if valor != None:
-                                destino = valor.split(" ")
-                                con = destino[0]
-                                destino = destino[1]
-                                letra = destino
-                                text += '%s,%s,%s; '%(inicio,destino,con)
-                                if soloValidar == "validar":
-                                    if getEstadoAceptacion(letra,estadosAceptacion) == True:
-                                        condicion = "Valida"
-                                        alertaExito(cade,">> Valida")
-                                        return True
-                                    else:
-                                        condicion = "No Valida"
-                                        alertaExito(cade,">> No Valida")
-                                        return True
-                                else:
-                                    if getEstadoAceptacion(letra,estadosAceptacion) == True:
-                                        condicion = "Valida"
-                                    else:
-                                        condicion = "No Valida"
-                #print("Expansion en gramatica:",textoPrimero,text," ->",condicion)
-                todo = f"Ruta en AFD: {textoPrimero}{text} --> {condicion}"
-                alertaExito(cade,todo)
-            else:
-                alertaError("Falta elmentos del AFD")           
-        elif tipo == "automata" and forma == "grammar":
-            estadoInicial = objeto.getEstadoInicial()
-            estadoInicial = estadoInicial.strip()
-            estadosAceptacion = objeto.getEstadosDeAceptacion()
-            listaIncial = ManejadorAFD.getListDiccionario(objeto,estadoInicial)
-            texto = estadoInicial
-            listaTrancion = objeto.getTrancisiones()
-            agrupacion = ""
-            primerTexto = ""
-            segundoTexto = ""
-            condicion = ""
-            eps = ""
-            if estadoInicial != None and estadosAceptacion != None and listaIncial != None:
-                for i in range(len(cadena)):
-                    valor = ""
-                    if i == 0:
-                        if i != len(cadena) - 1:
-                            valor = getEstadoCadena(cadena[i],listaIncial)
-                            destino = valor.split(" ")
-                            con = destino[0]
-                            destino = destino[1]
-                            agrupacion += f"{con}"
-                            letra = destino
-                            primerTexto = f"{texto} --> {agrupacion} {destino} --> "
-                        else:
-                            valor = getEstadoCadena(cadena[i],listaIncial)
-                            destino = valor.split(" ")
-                            con = destino[0]
-                            destino = destino[1]
-                            agrupacion += f"{con}"
-                            letra = destino
-                            primerTexto = f"{texto} --> {agrupacion} {destino} --> "                            
-                            if soloValidar == "validar":
-                                if getEstadoAceptacion(letra,estadosAceptacion) == True:
-                                    eps = "epsilon"
-                                    condicion = f"{cade}({eps})-->{cade} Valida"  
-                                    alertaExito(cade,">> Valida")
-                                    return True
-                                else:
-                                    condicion = f"{cade}({letra})-->{cade} No Valida"
-                                    alertaExito(cade,">> No Valida")
-                                    return True
-                            else:                                
-                                if getEstadoAceptacion(letra,estadosAceptacion) == True:
-                                    eps = "epsilon"
-                                    condicion = f"{cade}({eps})-->{cade} Valida"  
-                                else:
-                                    condicion = f"{cade}({letra})-->{cade} No Valida"
-                    else:
-                        if i != len(cadena) - 1 :
-                            inicio = letra
-                            lista = ManejadorAFD.getListDiccionario(objeto,inicio)
-                            valor = getEstadoCadena(cadena[i],lista)
-                            if valor != None:
-                                destino = valor.split(" ")
-                                con = destino[0]
-                                agrupacion += f"{con}"
-                                destino = destino[1]
-                                letra = destino
-                                segundoTexto += "%s %s --> "%(agrupacion,destino)
-                        else:
-                            inicio = letra
-                            lista = ManejadorAFD.getListDiccionario(objeto,inicio)
-                            valor = getEstadoCadena(cadena[i],lista)
-                            if valor != None:
-                                destino = valor.split(" ")
-                                con = destino[0]
-                                agrupacion += f"{con}"
-                                destino = destino[1]
-                                letra = destino
-                                segundoTexto += "%s %s --> "%(agrupacion,destino)
-                                
-                                if soloValidar == "validar":
-                                    if getEstadoAceptacion(letra,estadosAceptacion) == True:
-                                        eps = "epsilon"
-                                        condicion = f"{cade}({eps})-->{cade} Valida"  
-                                        alertaExito(cade,">> Valida")
-                                        return True
-                                    else:
-                                        condicion = f"{cade}({letra})-->{cade} No Valida"
-                                        alertaExito(cade,">> No Valida")
-                                        return True
-                                else:                                
-                                    if getEstadoAceptacion(letra,estadosAceptacion) == True:
-                                        eps = "epsilon"
-                                        condicion = f"{cade}({eps})-->{cade} Valida"  
-                                    else:
-                                        condicion = f"{cade}({letra})-->{cade} No Valida"
-                    #print("Ruta en Gramatica: ",primerTexto,segundoTexto,condicion)
-                    todo = f"Expansion en Gramatica: {primerTexto}{segundoTexto}{condicion}"
-                    alertaExito(cade,todo)
-            else:
-                alertaError("Falta elmentos del AFD")
-        elif tipo == "grammar" and forma == "grammar":
-            estadoInicial = objeto.getInicio()
-            estadoInicial = estadoInicial.strip()
-            estadosAceptacion = objeto.getEstadosAceptacion()
-            listaIncial = ManejadorGramatica.getListDiccionario(objeto,estadoInicial)
-            texto = estadoInicial
-            listaTrancion = objeto.getProduccion()
-            agrupacion = ""
-            primerTexto = ""
-            segundoTexto = ""
-            condicion = ""
-            eps = ""
-            if estadoInicial != None and estadosAceptacion != None and listaIncial != None:
-                for i in range(len(cadena)):
-                    valor = ""
-                    if i == 0:
-                        if i != len(cadena) - 1:
-                            valor = getEstadoCadena(cadena[i],listaIncial)
-                            destino = valor.split(" ")
-                            con = destino[0]
-                            destino = destino[1]
-                            agrupacion += f"{con}"
-                            letra = destino
-                            primerTexto = f"{texto} --> {agrupacion} {destino} --> "
-                        else:
-                            valor = getEstadoCadena(cadena[i],listaIncial)
-                            destino = valor.split(" ")
-                            con = destino[0]
-                            destino = destino[1]
-                            agrupacion += f"{con}"
-                            letra = destino
-                            primerTexto = f"{texto} --> {agrupacion} {destino} --> "                            
-                            if soloValidar == "validar":
-                                if getEstadoAceptacion(letra,estadosAceptacion) == True:
-                                    eps = "epsilon"
-                                    condicion = f"{cade}({eps})-->{cade} Valida"  
-                                    alertaExito(cade,">> Valida")
-                                    return True
-                                else:
-                                    condicion = f"{cade}({letra})-->{cade} No Valida"
-                                    alertaExito(cade,">> No Valida")
-                                    return True
-                            else:                                
-                                if getEstadoAceptacion(letra,estadosAceptacion) == True:
-                                    eps = "epsilon"
-                                    condicion = f"{cade}({eps})-->{cade} Valida"  
-                                else:
-                                    condicion = f"{cade}({letra})-->{cade} No Valida"
-                    else:
-                        if i != len(cadena) - 1 :
-                            inicio = letra
-                            lista = ManejadorGramatica.getListDiccionario(objeto,inicio)
-                            valor = getEstadoCadena(cadena[i],lista)
-                            if valor != None:
-                                destino = valor.split(" ")
-                                con = destino[0]
-                                agrupacion += f"{con}"
-                                destino = destino[1]
-                                letra = destino
-                                segundoTexto += "%s %s --> "%(agrupacion,destino)
-                        else:
-                            inicio = letra
-                            lista = ManejadorGramatica.getListDiccionario(objeto,inicio)
-                            valor = getEstadoCadena(cadena[i],lista)
-                            if valor != None:
-                                destino = valor.split(" ")
-                                con = destino[0]
-                                agrupacion += f"{con}"
-                                destino = destino[1]
-                                letra = destino
-                                segundoTexto += "%s %s --> "%(agrupacion,destino)
-                                
-                                if soloValidar == "validar":
-                                    if getEstadoAceptacion(letra,estadosAceptacion) == True:
-                                        eps = "epsilon"
-                                        condicion = f"{cade}({eps})-->{cade} Valida"  
-                                        alertaExito(cade,">> Valida")
-                                        return True
-                                    else:
-                                        condicion = f"{cade}({letra})-->{cade} No Valida"
-                                        alertaExito(cade,">> No Valida")
-                                        return True
-                                else:                                
-                                    if getEstadoAceptacion(letra,estadosAceptacion) == True:
-                                        eps = "epsilon"
-                                        condicion = f"{cade}({eps})-->{cade} Valida"  
-                                    else:
-                                        condicion = f"{cade}({letra})-->{cade} No Valida"
-                    #print("Ruta en Gramatica: ",primerTexto,segundoTexto,condicion)
-                    todo = f"Expansion en Gramatica: {primerTexto}{segundoTexto}{condicion}"
-                    alertaExito(cade,todo)
-            else:
-                alertaError("Falta elmentos del AFD") 
-        elif tipo == "grammar" and forma == "automata":
-            estadoInicial = objeto.getInicio()
-            estadoInicial = estadoInicial.strip()
-            estadosAceptacion = objeto.getEstadosAceptacion()
-            listaIncial = ManejadorGramatica.getListDiccionario(objeto,estadoInicial)
-            texto = estadoInicial
-            listaTrancion = objeto.getProduccion()
-            if estadoInicial != None and estadosAceptacion != None and listaIncial != None: 
-                #print(listaTrancion)
-                #print("Estado de aceptacion:",estadosAceptacion)
-                #print("---------------------------------------")
-                for i in range(len(cadena)):
-                    valor = ""
-                    if i == 0:
-                        if i != len(cadena) - 1:
-                            valor = getEstadoCadena(cadena[i],listaIncial)
-                            destino = valor.split(" ")
-                            con = destino[0]
-                            destino = destino[1]
-                            letra = destino
-                            textoPrimero = f"{texto},{destino},{con};"
-                            #print(textoPrimero)
-                        else:
-                            valor = getEstadoCadena(cadena[i],listaIncial)
-                            destino = valor.split(" ")
-                            con = destino[0]
-                            destino = destino[1]
-                            letra = destino
-                            textoPrimero = f"{texto},{destino},{con};"
-                            #print(textoPrimero)
-                            if soloValidar == "validar":
-                                if getEstadoAceptacion(letra,estadosAceptacion) == True:
-                                    condicion = "Valida"
-                                    alertaExito(cade,">> Valida")
-                                    return True
-                                else:
-                                    condicion = "No Valida"
-                                    alertaExito(cade,">> No Valida")
-                                    return True
-                            else:
-                                if getEstadoAceptacion(letra,estadosAceptacion) == True:
-                                    condicion = "Valida"
-                                else:
-                                    condicion = "No Valida"        
-                    else :
-                        if i != len(cadena) - 1 :
-                            #print(f"Valor de inicio en {i} :",letra)
-                            inicio = letra
-                            lista = ManejadorGramatica.getListDiccionario(objeto,inicio)
-                            valor = getEstadoCadena(cadena[i],lista)
-                            if valor != None:
-                                destino = valor.split(" ")
-                                con = destino[0]
-                                destino = destino[1]
-                                letra = destino
-                                text += '%s,%s,%s; '%(inicio,destino,con)
-                                #text += f"{inicio},{destino};{con}"
-                        else:
-                            #print(f"Valor de Fin en {i} :",letra)
-                            inicio = letra
-                            lista = ManejadorGramatica.getListDiccionario(objeto,inicio)
-                            valor = getEstadoCadena(cadena[i],lista)
-                            if valor != None:
-                                destino = valor.split(" ")
-                                con = destino[0]
-                                destino = destino[1]
-                                letra = destino
-                                text += '%s,%s,%s; '%(inicio,destino,con)
-                                if soloValidar == "validar":
-                                    if getEstadoAceptacion(letra,estadosAceptacion) == True:
-                                        condicion = "Valida"
-                                        alertaExito(cade,">> Valida")
-                                        return True
-                                    else:
-                                        condicion = "No Valida"
-                                        alertaExito(cade,">> No Valida")
-                                        return True
-                                else:
-                                    if getEstadoAceptacion(letra,estadosAceptacion) == True:
-                                        condicion = "Valida"
-                                    else:
-                                        condicion = "No Valida"
-                #print("Expansion en gramatica:",textoPrimero,text," ->",condicion)
-                todo = f"Ruta en AFD: {textoPrimero}{text} --> {condicion}"
-                alertaExito(cade,todo)
-            else:
-                alertaError("Falta elmentos del AFD")
-    else:
-        alertaError("No se encontro el AFD o la Gramatica")
+    
         
    
   
