@@ -38,18 +38,22 @@ def getRuta():
                     root.destroy()
                     return ruta,nombreAFD
                 else:
-                    return None
+                    return None,None
             else:
                 getRuta()
+                
         else:
             alertaError("No selecciono ningun archivo")
+            root.destroy()
+            return None,None
     except IndexError as e:
         alertaError(e)
+        return None,None
     
 def readArchivo():
     try:
         ruta,automata = getRuta()
-        if ruta != None or is_empty(ruta) == False:
+        if is_empty(ruta) == False and is_empty(automata) == False:
             archivo = open(f"{ruta}","r")
             texto = archivo.readlines()
             #print(texto)

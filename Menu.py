@@ -3,6 +3,8 @@ import ManejadorAFD
 import ManejadorGramatica
 import ManejadorCadena
 import ManejadorArchivo
+import ManejadorArchGramar
+import ManejadorGuardar
 def menuMain():
     while True:
         print("-------------------Menu Principal----------------------")
@@ -12,6 +14,7 @@ def menuMain():
         print("| 3.Evauluar Cadena                                   |")
         print("| 4.Reportes                                          |")
         print("| 5.Cargar Archivo de Entrada                         |")
+        print("| 6.Guardar                                           |")
         print("|   SALIR                                             |")
         print("|                                                     |")
         print("-------------------------------------------------------")
@@ -33,6 +36,9 @@ def menuMain():
         elif opcion == "5":
             os.system("cls")
             menuArchivo()
+        elif opcion == "6":
+            os.system("cls")
+            menuGuardar()
         elif opcion.lower() == "salir":
             os.system("cls")
             print("¿Seguro que desea Salir ?")
@@ -348,8 +354,54 @@ def menuArchivo():
             ManejadorArchivo.readArchivo()
         elif opcion == "2":
             os.system("cls")
+            ManejadorArchGramar.readArchivo()
         elif opcion.lower() == "salir":
             os.system("cls")
             break
         else:
             os.system("cls")
+
+
+def menuGuardar():
+    nombre = ""
+    while True:
+        print("-------------------Menu Guadar-------------------------")
+        print("|                                                     |")
+        print("| 1.El nombre del AFD o Gramatica a guardar           |")
+        print("| 2.El nombre con el que desea guardarlo              |")
+        print("|   SALIR                                             |")
+        print("|                                                     |")
+        print("-------------------------------------------------------")
+        print("")
+        print(">> ",end="")
+        opcion = input()
+        opcion = opcion.strip()
+        if opcion == "1":
+            os.system("cls")
+            nombre = setNombreGramaticaAFD()
+            if ManejadorCadena.existAFDGramatica(nombre) != True:
+                 ManejadorCadena.alertaError("No existe el afd o la grammarica")
+                 break
+        elif opcion == "2":
+            os.system("cls")
+            if is_empty(nombre.strip()) == False: 
+                ManejadorGuardar.transformarArchivo(nombre)
+            else:
+                ManejadorCadena.alertaError("No ingrese el nombre del AFD o Gramatica")
+
+        elif opcion.lower() == "salir":
+            os.system("cls")
+            break
+        else:
+            os.system("cls")
+            
+            
+
+def is_empty(data_structure):
+    if data_structure:
+        #print("No está vacía")
+        return False
+    else:
+        #print("Está vacía")
+        return True
+    
