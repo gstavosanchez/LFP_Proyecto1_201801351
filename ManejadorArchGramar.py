@@ -155,3 +155,5 @@ def is_empty(data_structure):
         #print("Está vacía")
         return True
     
+
+
