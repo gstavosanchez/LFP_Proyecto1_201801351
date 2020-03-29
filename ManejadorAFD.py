@@ -32,7 +32,7 @@ def help():
 def newAFD(nombre):
     nombre = nombre.strip()
     if datosDuplicados(nombre) == False:
-        nuevoAFD = AFD(nombre,[],[],"",[],{})
+        nuevoAFD = AFD(nombre,[],[],"",[],{},[],[],[])
         listaAFD.append(nuevoAFD)
         return True
     else:
@@ -136,6 +136,15 @@ def updateEstadosAceptacion(automata,listaEstadoAceptacion):
 
 def updateTranciones(automata,listaTransiciones):
     automata.setTrancisiones(listaTransiciones)
+
+def updateCadena(automata,listCadena):
+    automata.setCadena(listCadena)
+
+def updateCadenaValida(automata,listCadenaValida):
+    automata.setCadenaValida(listCadenaValida)
+
+def updateCadenaNoValida(automata,listCadenaNoValda):
+    automata.setCadenaNoValida(listCadenaNoValda)
 
 def setAlfabeto(nombre):
     nombre = nombre.strip()

@@ -94,6 +94,9 @@ def newTerminal(cadena,nombre):
                         if ManejadorAFD.datosDuplicadosEstadosAlfabeto(parteUno[x],listaEstados) == True and ManejadorAFD.datosDuplicadosEstadosAlfabeto(parteUno[x],listaEstadosAceptacion) == False:
                             #print("Estado de Aceptacion:",parteUno[x]," Condicion",parteDos[x])
                             listaEstadosAceptacion.append(parteUno[x])
+                    elif parteDos[x].lower() == "false":
+                        if ManejadorAFD.datosDuplicadosEstadosAlfabeto(parteUno[x],listaEstados) == True and ManejadorAFD.datosDuplicadosEstadosAlfabeto(parteUno[x],listaEstadosAceptacion) == True:
+                            listaEstadosAceptacion.remove(parteUno[x])
                 elif i == len(parteUno) - 1:
                     if ManejadorAFD.datosDuplicadosEstadosAlfabeto(parteUno[i],listaAlfabeto) == False:
                         #print("Alfabeto",parteUno[i])

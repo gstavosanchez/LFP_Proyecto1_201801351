@@ -75,6 +75,7 @@ def newGrammar(cadena,nombre):
             cadena = cadena.split(">")
             parteUno = cadena[0]
             parteDos = cadena[1]
+            parte2 = cadena[1]
             parteUno = parteUno.strip()
             parteDos = parteDos.lstrip()
             parteDos = parteDos.split(" ")
@@ -103,9 +104,10 @@ def newGrammar(cadena,nombre):
             
             
             if len(parteDos) - 1  == 0:
-                if ManejadorGramatica.duplicateDataInList("Z",listNoTerminal) == False and ManejadorGramatica.duplicateDataInList("Z",listEstadosAceptacion) == False:
-                    listNoTerminal.append("Z")
-                    listEstadosAceptacion.append("Z")           
+                if parte2.strip() != "epsilon":
+                    if ManejadorGramatica.duplicateDataInList("Z",listNoTerminal) == False and ManejadorGramatica.duplicateDataInList("Z",listEstadosAceptacion) == False:
+                        listNoTerminal.append("Z")
+                        listEstadosAceptacion.append("Z")           
                                   
             #print("No terminal:",listNoTerminal)
             ManejadorGramatica.updateNoTerminal(grammar,listNoTerminal)
@@ -128,9 +130,10 @@ def newProduccion(grammar,cadena):
     diccionario = grammar.getProduccion()
     if len(cadena)-1 == 4:
         cadena = cadena.split(">")
-        parteUno = cadena[0].strip()
-        parteDos = cadena[1].strip()        
-        texto = f"{parteUno}>{parteDos} Z"
+        if cadena[1].strip() != "epsilon":
+            parteUno = cadena[0].strip()
+            parteDos = cadena[1].strip()        
+            texto = f"{parteUno}>{parteDos} Z"
     else:
         cadena = cadena.split(">")
         parteUno = cadena[0].strip()

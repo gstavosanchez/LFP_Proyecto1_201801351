@@ -20,7 +20,7 @@ def alerta(mensaje):
 def newGramatica(name):
     name = name.strip()
     if duplicateData(name) == False:
-        newGrammar = Gramatica(name,[],[],"",{},[],[])
+        newGrammar = Gramatica(name,[],[],"",{},[],[],[],[],[])
         listaGramatica.append(newGrammar)
         return True
     else:
@@ -65,6 +65,16 @@ def updateProduccion(grammar,diccionario):
 
 def updateAceptacion(grammar,lisAceptacion):
     grammar.setEstadosAceptacion(lisAceptacion)
+
+def updateCadena(grammar,listCadena):
+    grammar.setCadena(listCadena)
+
+def updateCadenaValida(grammar,listCadenaValida):
+    grammar.setCadenaValida(listCadenaValida)
+
+def updateCadenaNoValida(grammar,listCadenaNoValda):
+    grammar.setCadenaNoValida(listCadenaNoValda)
+
 
 def setNewNoTerminal(name):
     name = name.strip()

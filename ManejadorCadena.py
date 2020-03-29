@@ -91,6 +91,9 @@ def validateCadena(name,soloValidar,forma):
                 texto = estadoInicial
                 listaTrancion = objeto.getTrancisiones()
                 textoPrimero = ""
+                listaCadena = objeto.getCadena()
+                listCadenaValida = objeto.getCadenaValida()
+                listCadenaNoValida = objeto.getCadenaNoValida()
                 if estadoInicial != None and estadosAceptacion != None and listaIncial != None: 
                     #print(listaTrancion)
                     #print("Estado de aceptacion:",estadosAceptacion)
@@ -120,10 +123,16 @@ def validateCadena(name,soloValidar,forma):
                                         if getEstadoAceptacion(letra,estadosAceptacion) == True:
                                             condicion = "Valida"
                                             alertaExito(cade,">> Valida")
+                                            agregar = f"{cade} {condicion}"
+                                            listaCadena.append(agregar)
+                                            listCadenaValida.append(cade)
                                             return True
                                         else:
                                             condicion = "No Valida"
                                             alertaExito(cade,">> No Valida")
+                                            agregar = f"{cade} {condicion}"
+                                            listaCadena.append(agregar)
+                                            listCadenaNoValida.append(cade)
                                             return True
                                     else:
                                         if getEstadoAceptacion(letra,estadosAceptacion) == True:
@@ -158,10 +167,16 @@ def validateCadena(name,soloValidar,forma):
                                         if getEstadoAceptacion(letra,estadosAceptacion) == True:
                                             condicion = "Valida"
                                             alertaExito(cade,">> Valida")
+                                            agregar = f"{cade} {condicion}"
+                                            listaCadena.append(agregar)
+                                            listCadenaValida.append(cade)
                                             return True
                                         else:
                                             condicion = "No Valida"
                                             alertaExito(cade,">> No Valida")
+                                            agregar = f"{cade} {condicion}"
+                                            listaCadena.append(agregar)
+                                            listCadenaNoValida.append(cade)
                                             return True
                                     else:
                                         if getEstadoAceptacion(letra,estadosAceptacion) == True:
@@ -171,6 +186,17 @@ def validateCadena(name,soloValidar,forma):
                     #print("Expansion en gramatica:",textoPrimero,text," ->",condicion)
                     todo = f"Ruta en AFD: {textoPrimero}{text} --> {condicion}"
                     alertaExito(cade,todo)
+                    if condicion == "Valida":
+                        agregar = f"{cade} Valida"
+                        listaCadena.append(agregar)
+                        listCadenaValida.append(cade)
+                    elif condicion == "No Valida":
+                        agregar = f"{cade} No Valida"
+                        listaCadena.append(agregar)
+                        listCadenaNoValida.append(cade)
+                    ManejadorAFD.updateCadena(objeto,listaCadena)
+                    ManejadorAFD.updateCadenaValida(objeto,listCadenaValida)
+                    ManejadorAFD.updateCadenaNoValida(objeto,listCadenaNoValida)
                 else:
                     alertaError("Falta elmentos del AFD")           
             elif tipo == "automata" and forma == "grammar":
@@ -185,6 +211,10 @@ def validateCadena(name,soloValidar,forma):
                 segundoTexto = ""
                 condicion = ""
                 eps = ""
+                condicionActual = ""
+                listaCadena = objeto.getCadena()
+                listCadenaValida = objeto.getCadenaValida()
+                listCadenaNoValida = objeto.getCadenaNoValida()
                 if estadoInicial != None and estadosAceptacion != None and listaIncial != None:
                     for i in range(len(cadena)):
                         valor = ""
@@ -212,17 +242,27 @@ def validateCadena(name,soloValidar,forma):
                                             eps = "epsilon"
                                             condicion = f"{cade}({eps})-->{cade} Valida"  
                                             alertaExito(cade,">> Valida")
+                                            condicionActual = "Valida"
+                                            agregar = f"{cade} {condicionActual}"
+                                            listaCadena.append(agregar)
+                                            listCadenaValida.append(cade)
                                             return True
                                         else:
                                             condicion = f"{cade}({letra})-->{cade} No Valida"
                                             alertaExito(cade,">> No Valida")
+                                            condicionActual = "No Valida"
+                                            agregar = f"{cade} {condicionActual}"
+                                            listaCadena.append(agregar)
+                                            listCadenaNoValida.append(cade)
                                             return True
                                     else:                                
                                         if getEstadoAceptacion(letra,estadosAceptacion) == True:
                                             eps = "epsilon"
-                                            condicion = f"{cade}({eps})-->{cade} Valida"  
+                                            condicion = f"{cade}({eps})-->{cade} Valida"
+                                            condicionActual = "Valida"  
                                         else:
                                             condicion = f"{cade}({letra})-->{cade} No Valida"
+                                            condicionActual = "No Valida"
                         else:
                             if i != len(cadena) - 1 :
                                 inicio = letra
@@ -252,20 +292,42 @@ def validateCadena(name,soloValidar,forma):
                                             eps = "epsilon"
                                             condicion = f"{cade}({eps})-->{cade} Valida"  
                                             alertaExito(cade,">> Valida")
+                                            condicionActual = "Valida"
+                                            agregar = f"{cade} {condicionActual}"
+                                            listaCadena.append(agregar)
+                                            listCadenaValida.append(cade)
                                             return True
                                         else:
                                             condicion = f"{cade}({letra})-->{cade} No Valida"
                                             alertaExito(cade,">> No Valida")
+                                            condicionActual = "No Valida"
+                                            agregar = f"{cade} {condicionActual}"
+                                            listaCadena.append(agregar)
+                                            listCadenaNoValida.append(cade)
                                             return True
                                     else:                                
                                         if getEstadoAceptacion(letra,estadosAceptacion) == True:
                                             eps = "epsilon"
-                                            condicion = f"{cade}({eps})-->{cade} Valida"  
+                                            condicion = f"{cade}({eps})-->{cade} Valida"
+                                            condicionActual = "Valida"  
                                         else:
                                             condicion = f"{cade}({letra})-->{cade} No Valida"
+                                            condicionActual = "No Valida"
                         #print("Ruta en Gramatica: ",primerTexto,segundoTexto,condicion)
                         todo = f"Expansion en Gramatica: {primerTexto}{segundoTexto}{condicion}"
                         alertaExito(cade,todo)
+                        if condicionActual == "Valida":
+                            agregar = f"{cade} Valida"
+                            listaCadena.append(agregar)
+                            listCadenaValida.append(cade)
+                        elif condicionActual == "No Valida":
+                            agregar = f"{cade} No Valida"
+                            listaCadena.append(agregar)
+                            listCadenaNoValida.append(cade)
+                        ManejadorAFD.updateCadena(objeto,listaCadena)
+                        ManejadorAFD.updateCadenaValida(objeto,listCadenaValida)
+                        ManejadorAFD.updateCadenaNoValida(objeto,listCadenaNoValida)
+                        
                 else:
                     alertaError("Falta elmentos del AFD")
             elif tipo == "grammar" and forma == "grammar":
@@ -280,6 +342,10 @@ def validateCadena(name,soloValidar,forma):
                 segundoTexto = ""
                 condicion = ""
                 eps = ""
+                condicionActual = ""
+                listaCadena = objeto.getCadena()
+                listCadenaValida = objeto.getCadenaValida()
+                listCadenaNoValida = objeto.getCadenaNoValida()
                 if estadoInicial != None and estadosAceptacion != None and listaIncial != None:
                     for i in range(len(cadena)):
                         valor = ""
@@ -307,17 +373,27 @@ def validateCadena(name,soloValidar,forma):
                                             eps = "epsilon"
                                             condicion = f"{cade}({eps})-->{cade} Valida"  
                                             alertaExito(cade,">> Valida")
+                                            condicionActual = "Valida"
+                                            agregar = f"{cade} {condicionActual}"
+                                            listaCadena.append(agregar)
+                                            listCadenaValida.append(cade)
                                             return True
                                         else:
                                             condicion = f"{cade}({letra})-->{cade} No Valida"
                                             alertaExito(cade,">> No Valida")
+                                            condicionActual = "No Valida"
+                                            agregar = f"{cade} {condicionActual}"
+                                            listaCadena.append(agregar)
+                                            listCadenaNoValida.append(cade)
                                             return True
                                     else:                                
                                         if getEstadoAceptacion(letra,estadosAceptacion) == True:
                                             eps = "epsilon"
-                                            condicion = f"{cade}({eps})-->{cade} Valida"  
+                                            condicion = f"{cade}({eps})-->{cade} Valida"
+                                            condicionActual = "Valida"  
                                         else:
                                             condicion = f"{cade}({letra})-->{cade} No Valida"
+                                            condicionActual = "No Valida"
                         else:
                             if i != len(cadena) - 1 :
                                 inicio = letra
@@ -347,20 +423,41 @@ def validateCadena(name,soloValidar,forma):
                                             eps = "epsilon"
                                             condicion = f"{cade}({eps})-->{cade} Valida"  
                                             alertaExito(cade,">> Valida")
+                                            condicionActual = "Valida"
+                                            agregar = f"{cade} {condicionActual}"
+                                            listaCadena.append(agregar)
+                                            listCadenaValida.append(cade)
                                             return True
                                         else:
                                             condicion = f"{cade}({letra})-->{cade} No Valida"
                                             alertaExito(cade,">> No Valida")
+                                            condicionActual = "No Valida"
+                                            agregar = f"{cade} {condicionActual}"
+                                            listaCadena.append(agregar)
+                                            listCadenaNoValida.append(cade)
                                             return True
                                     else:                                
                                         if getEstadoAceptacion(letra,estadosAceptacion) == True:
                                             eps = "epsilon"
                                             condicion = f"{cade}({eps})-->{cade} Valida"  
+                                            condicionActual = "Valida"
                                         else:
                                             condicion = f"{cade}({letra})-->{cade} No Valida"
+                                            condicionActual = "No Valida"
                         #print("Ruta en Gramatica: ",primerTexto,segundoTexto,condicion)
                         todo = f"Expansion en Gramatica: {primerTexto}{segundoTexto}{condicion}"
                         alertaExito(cade,todo)
+                        if condicionActual == "Valida":
+                            agregar = f"{cade} Valida"
+                            listaCadena.append(agregar)
+                            listCadenaValida.append(cade)
+                        else:
+                            agregar = f"{cade} No Valida"
+                            listaCadena.append(agregar)
+                            listCadenaNoValida.append(cade)
+                        ManejadorGramatica.updateCadena(objeto,listaCadena)
+                        ManejadorGramatica.updateCadenaValida(objeto,listCadenaValida)
+                        ManejadorGramatica.updateCadenaNoValida(objeto,listCadenaNoValida)
                 else:
                     alertaError("Falta elmentos del AFD") 
             elif tipo == "grammar" and forma == "automata":
@@ -370,6 +467,9 @@ def validateCadena(name,soloValidar,forma):
                 listaIncial = ManejadorGramatica.getListDiccionario(objeto,estadoInicial)
                 texto = estadoInicial
                 listaTrancion = objeto.getProduccion()
+                listaCadena = objeto.getCadena()
+                listCadenaValida = objeto.getCadenaValida()
+                listCadenaNoValida = objeto.getCadenaNoValida()
                 if estadoInicial != None and estadosAceptacion != None and listaIncial != None: 
                     #print(listaTrancion)
                     #print("Estado de aceptacion:",estadosAceptacion)
@@ -399,10 +499,17 @@ def validateCadena(name,soloValidar,forma):
                                         if getEstadoAceptacion(letra,estadosAceptacion) == True:
                                             condicion = "Valida"
                                             alertaExito(cade,">> Valida")
+                                            agregar = f"{cade} {condicion}"
+                                            listaCadena.append(agregar)
+                                            listCadenaValida.append(cade)
+                                            
                                             return True
                                         else:
                                             condicion = "No Valida"
                                             alertaExito(cade,">> No Valida")
+                                            agregar = f"{cade} {condicion}"
+                                            listaCadena.append(agregar)
+                                            listCadenaNoValida.append(cade)
                                             return True
                                     else:
                                         if getEstadoAceptacion(letra,estadosAceptacion) == True:
@@ -437,10 +544,16 @@ def validateCadena(name,soloValidar,forma):
                                         if getEstadoAceptacion(letra,estadosAceptacion) == True:
                                             condicion = "Valida"
                                             alertaExito(cade,">> Valida")
+                                            agregar = f"{cade} {condicion}"
+                                            listaCadena.append(agregar)
+                                            listCadenaValida.append(cade)
                                             return True
                                         else:
                                             condicion = "No Valida"
                                             alertaExito(cade,">> No Valida")
+                                            agregar = f"{cade} {condicion}"
+                                            listaCadena.append(agregar)
+                                            listCadenaNoValida.append(cade)
                                             return True
                                     else:
                                         if getEstadoAceptacion(letra,estadosAceptacion) == True:
@@ -450,6 +563,18 @@ def validateCadena(name,soloValidar,forma):
                     #print("Expansion en gramatica:",textoPrimero,text," ->",condicion)
                     todo = f"Ruta en AFD: {textoPrimero}{text} --> {condicion}"
                     alertaExito(cade,todo)
+                    if condicion == "Valida":
+                        agregar = f"{cade} Valida"
+                        listaCadena.append(agregar)
+                        listCadenaValida.append(cade)
+                    else:
+                        agregar = f"{cade} No Valida"
+                        listaCadena.append(agregar)
+                        listCadenaNoValida.append(cade)
+                    ManejadorGramatica.updateCadena(objeto,listaCadena)
+                    ManejadorGramatica.updateCadenaValida(objeto,listCadenaValida)
+                    ManejadorGramatica.updateCadenaNoValida(objeto,listCadenaNoValida)
+                    
                 else:
                     alertaError("Falta elmentos del AFD")
         else:

@@ -33,7 +33,7 @@ def menuMain():
             menuEvaluarCadena()
         elif opcion == "4":
             os.system("cls")
-            ManejadorGuardar.getRutaGraphiz("hola")
+            ManejadorGuardar.generatePDF("gramatica")
         elif opcion == "5":
             os.system("cls")
             menuArchivo()

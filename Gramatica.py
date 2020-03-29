@@ -5,9 +5,12 @@ class Gramatica():
     inicio = ""
     produccion = {}
     transformada = []
-    estadosAceptacion = [] 
+    estadosAceptacion = []
+    cadenas = []
+    cadenasValidas = []
+    cadenasNoValidas = [] 
 
-    def __init__(self,nombre,noTerminal,terminal,inicio,produccion,transformada,estadosAceptacion):
+    def __init__(self,nombre,noTerminal,terminal,inicio,produccion,transformada,estadosAceptacion,cadenas,cadenasValidas,cadenasNoValidas):
         self.nombre = nombre
         self.noTerminal = noTerminal
         self.terminal = terminal
@@ -15,7 +18,26 @@ class Gramatica():
         self.produccion = produccion
         self.transformada = transformada
         self.estadosAceptacion = estadosAceptacion
+        self.cadenas = cadenas
+        self.cadenasValidas = cadenasValidas
+        self.cadenasNoValidas = cadenasNoValidas
 
+
+    def getCadena(self):
+        return self.cadenas
+    def setCadena(self,cadenas):
+        self.cadenas = cadenas
+    
+    def getCadenaValida(self):
+        return self.cadenasValidas        
+    def setCadenaValida(self,cadenasValidas):
+        self.cadenasValidas = cadenasValidas
+        
+    def getCadenaNoValida(self):
+        return self.cadenasNoValidas
+    def setCadenaNoValida(self,cadenasNoValidas):
+        self.cadenasNoValidas = cadenasNoValidas
+    
     def getNombre(self):
         return self.nombre
     def setNombre(self,nombre):
