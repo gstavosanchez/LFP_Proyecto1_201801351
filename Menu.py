@@ -33,7 +33,7 @@ def menuMain():
             menuEvaluarCadena()
         elif opcion == "4":
             os.system("cls")
-            ManejadorGuardar.generatePDF("gramatica")
+            getReporteIncio()
         elif opcion == "5":
             os.system("cls")
             menuArchivo()
@@ -290,6 +290,13 @@ def menuGramatica():
         else:
             menuGramatica()
 
+
+def getReporteIncio():
+    nombre = setNombreGramaticaAFD()
+    if is_empty(nombre.strip()) == False:
+        if ManejadorCadena.existAFDGramatica(nombre.strip()) == True:
+            ManejadorGuardar.generatePDF(nombre.strip())
+         
 
 def setNombreGramaticaAFD():
     print("Ingrese el nombre la Gramatica o AFD")

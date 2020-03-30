@@ -245,7 +245,7 @@ def generatePDF(name):
     root = Tk()
     root.filename =  filedialog.asksaveasfilename(initialdir = "/",title = "Select file PFD",filetypes = (("PDF files","*.pdf"),("all files","*.*")))
     ruta = root.filename
-    
+    rutaPFD = ""
     if is_empty(ruta.strip()) == False:
         rutaPFD = f"{ruta}.pdf"
         root.destroy()
@@ -262,13 +262,20 @@ def generatePDF(name):
                 title = "Reporte de automata"
                 nameAuto = objeto.getNombre() 
                 subTitle = f"Nombre: {nameAuto}"
+                ####### Partes de un AFD
                 estados = objeto.getEstado()
                 alfabeto = objeto.getAlfabeto()
                 estadoInicial = objeto.getEstadoInicial()
                 estaodsAceptacion = objeto.getEstadosDeAceptacion()
+                ###### Formato
+                estados = getTexto(estados)
+                alfabeto = getTexto(alfabeto)
+                estaodsAceptacion = getTexto(estaodsAceptacion)
+                #ValidarCadena
                 cadena = objeto.getCadena()
                 cadenaValida = objeto.getCadenaValida()
                 cadenaNoValida = objeto.getCadenaNoValida()
+                #Formata linea
                 tipoAfd = "~ AFD:"
                 alfa = f"  > Alfabeto: {alfabeto}"
                 est = f"  > Estados: {estados}"
@@ -278,6 +285,18 @@ def generatePDF(name):
                 cadenaTexto = getCadenaList(cadena)
                 cadenaNoValidaTexto = getCadenaList(cadenaNoValida)
                 cadenaValidaTexto = getCadenaList(cadenaValida)
+                
+                                
+                cadenaTexto = f"  > {cadenaTexto}"
+                cadenaNoValidaTexto = f"  > {cadenaNoValidaTexto}"
+                cadenaValidaTexto = f"  > {cadenaValidaTexto}"
+                
+                #Gramatica Partes 
+                noTerminales = f"  > No Terminales: {estados}"
+                terminales = f"  > Terminales: {alfabeto}"
+                inicio = f"  > Inicio: {estadoInicial}"
+                pro = getTextDiccionario(objeto.getTrancisiones(),estaodsAceptacion)
+                produccion = f"     {pro}" 
 
                 textLines = [tipoAfd,
                              alfa,
@@ -289,7 +308,13 @@ def generatePDF(name):
                              '~ Cadena Validas:',
                              cadenaValidaTexto,
                              '~ Cadena No Validas:',
-                             cadenaNoValidaTexto]
+                             cadenaNoValidaTexto,
+                             '~ Gramatica:',
+                             noTerminales,
+                             terminales,
+                             inicio,
+                             '  > Produccion Gramtica:',
+                             produccion]
                 image = rutaImagen
                 pdf = canvas.Canvas(fileName)
                 pdf.setTitle(documentTitle)
@@ -305,18 +330,14 @@ def generatePDF(name):
                 text = pdf.beginText(40, 680)
                 text.setFont("Courier", 14)
                 text.setFillColor(colors.black)
-                # for i in range(len(textLines)):
-                #     te = textLines[i]
-                #     if te.find("/n") != -1:
-                #         textLines[i] = textLines[i].replace("/n","")
-                #         textLines.append('') 
                 
                 for line in textLines:
                      text.textLine(line)
                 pdf.drawText(text)
-                pdf.drawCentredString(120,275, "AFD:")
-                pdf.drawInlineImage(image, 120, 100,150,175)
+                pdf.drawCentredString(120,250, "~ Grafo AFD:")
+                pdf.drawInlineImage(image, 200, 100,180,210)
                 pdf.save()
+                
             elif tipo == "grammar":
                 fileName = rutaPFD
                 documentTitle = 'Document title!'
@@ -327,9 +348,17 @@ def generatePDF(name):
                 alfabeto = objeto.getTerminal()
                 estadoInicial = objeto.getInicio()
                 estaodsAceptacion = objeto.getEstadosAceptacion()
+            
+                ###### Formato
+                estados = getTexto(estados)
+                alfabeto = getTexto(alfabeto)
+                estaodsAceptacion = getTexto(estaodsAceptacion)
+                
                 cadena = objeto.getCadena()
                 cadenaValida = objeto.getCadenaValida()
                 cadenaNoValida = objeto.getCadenaNoValida()
+                
+                
                 tipoAfd = "~ AFD:"
                 alfa = f"  > Alfabeto: {alfabeto}"
                 est = f"  > Estados: {estados}"
@@ -339,6 +368,19 @@ def generatePDF(name):
                 cadenaTexto = getCadenaList(cadena)
                 cadenaNoValidaTexto = getCadenaList(cadenaNoValida)
                 cadenaValidaTexto = getCadenaList(cadenaValida)
+                
+                cadenaTexto = f"  > {cadenaTexto}"
+                cadenaNoValidaTexto = f"  > {cadenaNoValidaTexto}"
+                cadenaValidaTexto = f"  > {cadenaValidaTexto}"
+                
+                #Gramatica Partes 
+                noTerminales = f"  > No Terminales: {estados}"
+                terminales = f"  > Terminales: {alfabeto}"
+                inicio = f"  > Inicio: {estadoInicial}"
+                pro = getTextDiccionario(objeto.getProduccion(),estaodsAceptacion)
+                produccion = f"     {pro}" 
+                
+                
                 textLines = [tipoAfd,
                              alfa,
                              est,
@@ -349,7 +391,13 @@ def generatePDF(name):
                              '~ Cadena Validas:',
                              cadenaValidaTexto,
                              '~ Cadena No Validas:',
-                             cadenaNoValidaTexto]
+                             cadenaNoValidaTexto,
+                             '~ Gramatica:',
+                             noTerminales,
+                             terminales,
+                             inicio,
+                             '  > Produccion Gramtica:',
+                             produccion]
                 image = rutaImagen
                 pdf = canvas.Canvas(fileName)
                 pdf.setTitle(documentTitle)
@@ -360,22 +408,17 @@ def generatePDF(name):
                 #Sub titulo para el reporte
                 pdf.setFillColorRGB(0, 0, 0)
                 pdf.setFont("Courier-Bold", 24)
-                pdf.drawCentredString(125,720, subTitle)
+                pdf.drawCentredString(175,720, subTitle)
                 pdf.line(30, 710, 550, 710)
                 text = pdf.beginText(40, 680)
                 text.setFont("Courier", 14)
                 text.setFillColor(colors.black)
-                # for i in range(len(textLines)):
-                #     te = textLines[i]
-                #     if te.find("/n") != -1:
-                #         textLines[i] = textLines[i].replace("/n","")
-                #         textLines.append('') 
-                
+
                 for line in textLines:
                      text.textLine(line)
                 pdf.drawText(text)
-                pdf.drawCentredString(120,275, "AFD:")
-                pdf.drawInlineImage(image, 120, 100,150,175)
+                pdf.drawCentredString(120,250, "~ Grafo AFD:")
+                pdf.drawInlineImage(image, 200, 100,180,210)
                 pdf.save()
                 
                 
@@ -385,10 +428,51 @@ def generatePDF(name):
 
 def getCadenaList(lista):
     texto = ""
+    textoCompleto = ""
     if lista != None or len(lista) - 1 != -1:
-        for value in lista:
-            texto += f"  > {value} /n"
-        return texto
+        for i in range(len(lista)):
+            valor = lista[i]
+            if i != len(lista) -1:
+                texto +=f"{valor},"
+            else:
+                texto += f"{valor}"
+        textoCompleto = '[%s]'%(texto)
+        return textoCompleto
     else:
         texto = "--"
         return texto
+    
+    
+def getTextDiccionario(diccionario,listAceptacion):
+    texto = ""
+    textCompleto = ""
+    for key,value in diccionario.items():            
+        for listCadena in value:
+            if listCadena != "epsilon":
+                cadena = listCadena.split(" ")
+                alfabeto = cadena[0]
+                estado = cadena[1]
+                texto += f"{alfabeto}{estado}|"
+        
+        if searchInListAceptacion(key,listAceptacion) == True:
+            texto += f"epsilon | "
+        
+        textCompleto += f"*{key}-> {texto} "
+        texto = ""
+        
+    return textCompleto
+    
+def getTexto(lista):
+    texto = ""
+    textoCompleto = ""
+    for i in range(len(lista)):
+        if i != len(lista) - 1:
+            letra = lista[i]
+            texto += f"{letra},"
+        else:
+            letra = lista[i]
+            texto += f"{letra}"
+    textoCompleto = '{%s}'%(texto)
+    return textoCompleto
+        
+        

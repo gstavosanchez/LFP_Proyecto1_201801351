@@ -451,7 +451,7 @@ def validateCadena(name,soloValidar,forma):
                             agregar = f"{cade} Valida"
                             listaCadena.append(agregar)
                             listCadenaValida.append(cade)
-                        else:
+                        elif condicionActual == "No Valida":
                             agregar = f"{cade} No Valida"
                             listaCadena.append(agregar)
                             listCadenaNoValida.append(cade)
