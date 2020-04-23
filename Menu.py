@@ -5,6 +5,8 @@ import ManejadorCadena
 import ManejadorArchivo
 import ManejadorArchGramar
 import ManejadorGuardar
+import ManejadorGramaticaDos
+
 def menuMain():
     while True:
         print("-------------------Menu Principal----------------------")
@@ -15,6 +17,7 @@ def menuMain():
         print("| 4.Reportes                                          |")
         print("| 5.Cargar Archivo de Entrada                         |")
         print("| 6.Guardar                                           |")
+        print("| 7.Gramatica Tipo Dos                                |")
         print("|   SALIR                                             |")
         print("|                                                     |")
         print("-------------------------------------------------------")
@@ -40,6 +43,9 @@ def menuMain():
         elif opcion == "6":
             os.system("cls")
             menuGuardar()
+        elif opcion == "7":
+            os.system("cls")
+            menuGramticaTiDos()
         elif opcion.lower() == "salir":
             os.system("cls")
             print("¿Seguro que desea Salir ?")
@@ -413,3 +419,130 @@ def is_empty(data_structure):
         #print("Está vacía")
         return True
     
+def setNombreGramticaDos():
+    print("Ingrese el nombre de la Gramtica Dos")
+    print(">> ",end="")
+    nombre = input()
+    nombre = nombre.strip()
+    os.system("cls")
+    return nombre 
+    
+    
+def menuGramticaTiDos():
+    while True:
+        print("------------------Gramatica Tipo 2---------------------")
+        print("|                                                     |")
+        print("| 1.Ingresar/Modificar Gramatica                      |")
+        print("| 2.Generar Automata de Pila                          |")
+        print("| 3.Visualizar automata                               |")
+        print("| 4.Validar Cadena                                    |")
+        print("|   SALIR                                             |")
+        print("|                                                     |")
+        print("-------------------------------------------------------")
+        print("")
+        print(">> ",end="")
+        opcion = input()
+        opcion = opcion.strip()
+        if opcion == "1":
+            os.system("cls")
+            menuNuevoGramaticaDos()
+        elif opcion == "2":
+            os.system("cls")
+        elif opcion.lower() == "salir":
+            os.system("cls")
+            break
+        else:
+            os.system("cls")
+        
+
+def menuNuevoGramaticaDos():
+    nombre = setNombreGramticaDos()
+    if nombre != "update":
+        if ManejadorGramaticaDos.newGramaticaDos(nombre) == True:
+            while True:
+                print("--------------Menu Gramatica Tipo 2--------------------")
+                print("|                                                     |")
+                print("| 1.Ingresar Terminales                               |")
+                print("| 2.Ingresar No terminales                            |")
+                print("| 3.Ingresar No Terminal Inicial                      |")
+                print("| 4.Ingresar Producciones                             |")
+                print("| 5.Borrar Produccion                                 |")
+                print("|   SALIR                                             |")
+                print("|                                                     |")
+                print("-------------------------------------------------------")
+                print("")
+                print(">> ",end="")
+                opcion = input()
+                opcion = opcion.strip()
+                if opcion == "1":
+                    os.system("cls")
+                    ManejadorGramaticaDos.setNewTerminal(nombre)
+                elif opcion == "2":
+                    os.system("cls")
+                    ManejadorGramaticaDos.setNewNoTerminal(nombre)
+                elif opcion == "3":
+                    os.system("cls")
+                    ManejadorGramaticaDos.setNTInicial(nombre)
+                elif opcion == "4":
+                    os.system("cls")
+                    ManejadorGramaticaDos.setProduccion(nombre)
+                elif opcion == "5":
+                    os.system("cls")
+                    ManejadorGramaticaDos.borrar_cadena(nombre)
+                elif opcion.lower() == "ver":
+                    os.system("cls")
+                    ManejadorGramaticaDos.verGramatica(nombre)
+                elif opcion.lower() == "salir":
+                    os.system("cls")
+                    break
+                else:
+                    os.system("cls")
+    elif nombre == "update":
+        nombre = setNombreGramticaDos()
+        nombre = nombre.strip()
+        buscado = ManejadorGramaticaDos.getObjeto(nombre)
+        if buscado != None:
+            while True:
+                print("--------------Menu UPDATE Gramatica Tipo 2-------------")
+                print("|                                                     |")
+                print("| 1.Ingresar Terminales                               |")
+                print("| 2.Ingresar No terminales                            |")
+                print("| 3.Ingresar No Terminal Inicial                      |")
+                print("| 4.Ingresar Producciones                             |")
+                print("| 5.Borrar Produccion                                 |")
+                print("|   SALIR                                             |")
+                print("|                                                     |")
+                print("-------------------------------------------------------")
+                print("")
+                print(">> ",end="")
+                opcion = input()
+                opcion = opcion.strip()
+                if opcion == "1":
+                    os.system("cls")
+                    ManejadorGramaticaDos.setNewTerminal(nombre)
+                elif opcion == "2":
+                    os.system("cls")
+                    ManejadorGramaticaDos.setNewNoTerminal(nombre)
+                elif opcion == "3":
+                    os.system("cls")
+                    ManejadorGramaticaDos.setNTInicial(nombre)
+                elif opcion == "4":
+                    os.system("cls")
+                    ManejadorGramaticaDos.setProduccion(nombre)
+                elif opcion == "5":
+                    os.system("cls")
+                    ManejadorGramaticaDos.borrar_cadena(nombre)
+                elif opcion.lower() == "ver":
+                    os.system("cls")
+                    ManejadorGramaticaDos.verGramatica(nombre)
+                elif opcion == "salir":
+                    os.system("cls")
+                    break
+                else:
+                    os.system("cls")
+        else:
+            os.system("cls")
+            ManejadorGramaticaDos.alerta("No se encontro la Gramtica Tipo 2 :(")
+                    
+   
+        
