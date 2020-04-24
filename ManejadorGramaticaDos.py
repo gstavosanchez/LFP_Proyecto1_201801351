@@ -57,6 +57,7 @@ def verGramatica(name):
             print(f" No Terminal: ",gramatica.getNoTerminal())
             print(f" No Ter. Incial: ",gramatica.getNoTerminalInicial())
             print(f" Produccion: ",gramatica.getProduccion())
+            print(f" Produccion Trans: ",gramatica.getProTransformada())
         
         
 
@@ -206,6 +207,9 @@ def setProduccion(nombre):
                 os.system("cls")
                 break
         updateProduccion(gramatica,diccionarioTemp)
+        if recursivo_mejorado(gramatica) == True:
+            tranformar_gramtica(gramatica)    
+        
             
 def analisis(gramantica,cadena):
     try:
@@ -234,7 +238,7 @@ def analisis(gramantica,cadena):
         return(None,None,None)
         
       
-# Retornar la lista de cierta clave
+# Retornar la lista de cierta clave de un diccionario
 def getListaInDiccionario(grammar,clave):
     diccionario = grammar.getProduccion()
     for key,value in diccionario.items():
@@ -266,15 +270,44 @@ def exist(gramatica,cadena):
 # Verificar si es recursiva
 def es_recursivo(gramatica,cadena):
     if cadena != "epsilon":
-        if len(cadena) > 1:
-            for i in range(len(cadena)):
-                #print("Numero:",i," Letra:",cadena[i])
-                if i == 0:
-                    if datosDuplicadosAnyList(cadena[i],gramatica.getNoTerminal()) == True:
-                        return True
-            return False
-        else:
-            return False
+        for i in range(len(cadena)):
+            #print("Numero:",i," Letra:",cadena[i])
+            if i == 0:
+                if datosDuplicadosAnyList(cadena[i],gramatica.getNoTerminal()) == True:
+                    return True
+        return False
+    else:
+        return False
+
+def recursivo_mejorado(gramatica):
+    diccionario = gramatica.getProduccion()
+    inicio = gramatica.getNoTerminalInicial()
+    if inicio != None and size_diccionario(gramatica):
+        for key,value in diccionario.items():
+            listaKey = value
+            for cadena in listaKey:
+                if key == inicio and len(cadena) == 1 and datosDuplicadosAnyList(cadena,gramatica.getNoTerminalInicial()) == True:
+                    pass
+                else:
+                    if es_recursivo(gramatica,cadena) == True:
+                        return True             
+        return False
+    else:
+        alerta("Falta datos para determinar recursividad :(")
+        return False
+        
+
+
+def get_letraRecursiva(gramatica,cadena):
+    if cadena != "epsilon":
+        for i in range(len(cadena)):
+            #print("Numero:",i," Letra:",cadena[i])
+            if i == 0:
+                if datosDuplicadosAnyList(cadena[i],gramatica.getNoTerminal()) == True:
+                    return cadena[i]
+        return None
+    else:
+        return None
         
             
 
@@ -346,5 +379,107 @@ def analizar_borrador(gramatica,cadena):
         return False
 
 
+# Retornar el tamaño del diccionario
+def size_diccionario(grammar):
+    diccionario = grammar.getProduccion()
+    x = 0
+    for key,value in diccionario.items():
+        x +=1
+    return x
+
+
 def tranformar_gramtica(gramatica):
-    pass
+    if size_diccionario(gramatica) != 0:
+        eps = "epsilon"
+        diccionario = gramatica.getProduccion()
+        dicc_aux = {}
+        for  key,value in diccionario.items():
+            listaKey = value
+            for cadena in listaKey:
+                #print("Clave: ",key+" Valor:",cadena)
+                if len(cadena) ==  1 and datosDuplicadosAnyList(cadena,gramatica.getNoTerminal()) == True:
+                    listaAux = []
+                    listaAux.append(cadena)
+                    dicc_aux[key] = listaAux
+                else:
+                    #Agregar los nuevos NO Terminales AP,ZP
+                    no_terminal = key+"P"
+                    if es_recursivo(gramatica,cadena) == True:
+                        if datosDuplicadosAnyList(no_terminal,gramatica.getNoTerminal()) == False:
+                            listaNoTerminal = gramatica.getNoTerminal()
+                            listaNoTerminal.append(no_terminal)
+                            updateNoTerminal(gramatica,listaNoTerminal)
+                            # Generar la nueva cadena mnZ Ap
+                            letra = get_letraRecursiva(gramatica,cadena)
+                            cadenaNueva = cadena.replace(letra,"",1)
+                            cadenaNueva = cadenaNueva+" "+no_terminal
+                            cadenaNueva = no_terminal+">"+cadenaNueva
+                            cadenaEps = no_terminal+">"+eps
+                            #print(cadenaNueva)
+                            #print(cadenaEps)
+                            #Agregar al diccionario
+                            cla,val = analisis_transformada(gramatica,cadenaNueva)
+                            if cla != None and val != None:
+                                dicc_aux[cla] = val
+                                updateProTransformada(gramatica,dicc_aux)
+                            cl,va = analisis_transformada(gramatica,cadenaEps)
+                            if cl != None and va != None:
+                                dicc_aux[cl]= va
+                                updateProTransformada(gramatica,dicc_aux)
+                    else:
+                        # Generar las nuevas cadenas A> xC AP
+                        cadenaNuevaDos = cadena+" "+no_terminal
+                        cadenaNuevaDos = key+">"+cadenaNuevaDos
+                        #print(cadenaNuevaDos)
+                        cla,val = analisis_transformada(gramatica,cadenaNuevaDos)
+                        if cla != None and val != None:
+                            dicc_aux[cla] = val
+                            updateProTransformada(gramatica,dicc_aux)
+                
+    else:
+        alerta("Sus producciones estan vacias")
+
+
+def analisis_transformada(gramantica,cadena):
+    try:
+        cadena = cadena.split(">")
+        clave = cadena[0].strip()
+        listaPro = cadena[1]
+        if listaPro.lower() != "epsilon":
+            if datosDuplicadosAnyList(clave,gramantica.getNoTerminal()) == True:
+                listaTemp = get_lista_Transformada(gramantica,clave)
+                if listaTemp == None:
+                    listaTemp = []
+                    listaTemp.append(listaPro)
+                    return(clave,listaTemp)
+                else:
+                    listaTemp.append(listaPro)
+                    return(clave,listaTemp)
+            else:
+                alerta("No se encontro el Terminal o No Terminal :(")
+                return(None,None,None)
+        else:
+            if datosDuplicadosAnyList(clave,gramantica.getNoTerminal()) == True:
+                listaTemp = get_lista_Transformada(gramantica,clave)
+                if listaTemp == None:
+                    listaTemp = []
+                    listaTemp.append(listaPro)
+                    return(clave,listaTemp)
+                else:
+                    listaTemp.append(listaPro)
+                    return(clave,listaTemp)
+            else:
+                alerta("No se encontro el Terminal o No Terminal :(")
+                return(None,None,None)
+    except IndexError as e:
+        alerta(e)
+        return(None,None,None)
+        
+      
+# Retornar la lista de cierta clave de un diccionario de la transformada
+def get_lista_Transformada(grammar,clave):
+    diccionario = grammar.getProTransformada()
+    for key,value in diccionario.items():
+        if clave == key:
+            return value
+    return None
