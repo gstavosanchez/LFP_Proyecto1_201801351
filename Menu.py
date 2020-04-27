@@ -6,6 +6,7 @@ import ManejadorArchivo
 import ManejadorArchGramar
 import ManejadorGuardar
 import ManejadorGramaticaDos
+import ManejadorAutomaPila
 
 def menuMain():
     while True:
@@ -426,7 +427,14 @@ def setNombreGramticaDos():
     nombre = nombre.strip()
     os.system("cls")
     return nombre 
-    
+
+def setNombreAutomataPila():
+    print("Ingrese el nombre para el automata de pila")
+    print(">> ",end="")
+    nombre = input()
+    nombre = nombre.strip()
+    os.system("cls")
+    return nombre 
     
 def menuGramticaTiDos():
     while True:
@@ -448,6 +456,19 @@ def menuGramticaTiDos():
             menuNuevoGramaticaDos()
         elif opcion == "2":
             os.system("cls")
+            nombreGramatica = setNombreGramticaDos()
+            nombrePila = setNombreAutomataPila()
+            if is_empty(nombreGramatica) == False and is_empty(nombrePila) == False:
+                ManejadorAutomaPila.new_automataPila(nombreGramatica,nombrePila)
+            else:
+                ManejadorAutomaPila.alerta("Datos Vacios")
+        elif opcion == "3":
+            os.system("cls")
+            nombre = setNombreAutomataPila()
+            if is_empty(nombre) == False:
+                ManejadorAutomaPila.mostrar_sextupla(nombre)
+            else:
+                ManejadorAutomaPila.alerta("Datos Vacios")
         elif opcion.lower() == "salir":
             os.system("cls")
             break

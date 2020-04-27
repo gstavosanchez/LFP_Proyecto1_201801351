@@ -79,10 +79,38 @@ def updateProTransformada(grammarDos,parametro):
 
 
 def datosDuplicadosAnyList(name,lista):
+    name = name.strip()
     for valor in lista:
-        if name == valor:
+        if valor == name:
             return True
     return False
+    
+def datos_Duplicados_Any(name,lista):
+    name = name.strip()
+    #print(name)
+    if es_numero(name) == False:
+        if es_mayuscula(name) == True:
+            for valor in lista:
+                if valor == name:
+                    #print("Valor:",valor)
+                    if es_mayuscula(valor) == True and es_mayuscula(name) == True:
+                        return True
+            return False
+        elif es_mayuscula(name) == False:
+            for valor in lista:
+                if valor == name:
+                    #print("Valor:",valor)
+                    if es_mayuscula(valor) == False and es_mayuscula(name) == False:
+                        return True
+            return False
+    else:
+        for valor in lista:
+            if valor == name:
+                return True
+        return False
+        
+
+        
 
 def setNewTerminal(nombre):
     nombre = nombre.strip()
@@ -217,7 +245,7 @@ def analisis(gramantica,cadena):
         cadena = cadena.split(">")
         clave = cadena[0].strip()
         listaPro = cadena[1].strip()
-        recursivo = es_recursivo(gramantica,listaPro)
+        recursivo = False
         if datosDuplicadosAnyList(clave,gramantica.getNoTerminal()) == True and exist(gramantica,listaPro) == True:
             listaTemp = getListaInDiccionario(gramantica,clave)
             if listaTemp == None:
@@ -271,9 +299,9 @@ def exist(gramatica,cadena):
 def es_recursivo(gramatica,cadena):
     if cadena != "epsilon":
         for i in range(len(cadena)):
-            #print("Numero:",i," Letra:",cadena[i])
             if i == 0:
-                if datosDuplicadosAnyList(cadena[i],gramatica.getNoTerminal()) == True:
+                #print("Metodo Recursivo: " +cadena[i])
+                if datos_Duplicados_Any(cadena[i],gramatica.getNoTerminal()) == True:
                     return True
         return False
     else:
@@ -286,8 +314,11 @@ def recursivo_mejorado(gramatica):
         for key,value in diccionario.items():
             listaKey = value
             for cadena in listaKey:
-                if key == inicio and len(cadena) == 1 and datosDuplicadosAnyList(cadena,gramatica.getNoTerminalInicial()) == True:
-                    pass
+                # print(len(cadena))
+                # print("Key:",key)
+                # print("Incio",inicio)
+                if key == inicio and len(cadena) == 1 and datos_Duplicados_Any(cadena,gramatica.getNoTerminal()) == True:
+                    print("")
                 else:
                     if es_recursivo(gramatica,cadena) == True:
                         return True             
@@ -406,6 +437,7 @@ def tranformar_gramtica(gramatica):
                     no_terminal = key+"P"
                     if es_recursivo(gramatica,cadena) == True:
                         if datosDuplicadosAnyList(no_terminal,gramatica.getNoTerminal()) == False:
+                            listaTerminal = gramatica.getTerminal()
                             listaNoTerminal = gramatica.getNoTerminal()
                             listaNoTerminal.append(no_terminal)
                             updateNoTerminal(gramatica,listaNoTerminal)
@@ -420,8 +452,10 @@ def tranformar_gramtica(gramatica):
                             #Agregar al diccionario
                             cla,val = analisis_transformada(gramatica,cadenaNueva)
                             if cla != None and val != None:
+                                listaTerminal.append(eps)
                                 dicc_aux[cla] = val
                                 updateProTransformada(gramatica,dicc_aux)
+                                updateTerminal(gramatica,listaTerminal)
                             cl,va = analisis_transformada(gramatica,cadenaEps)
                             if cl != None and va != None:
                                 dicc_aux[cl]= va
