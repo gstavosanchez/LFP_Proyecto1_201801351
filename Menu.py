@@ -469,6 +469,9 @@ def menuGramticaTiDos():
                 ManejadorAutomaPila.mostrar_sextupla(nombre)
             else:
                 ManejadorAutomaPila.alerta("Datos Vacios")
+        elif opcion == "4":
+            os.system("cls")
+            menu_validarCadena()
         elif opcion.lower() == "salir":
             os.system("cls")
             break
@@ -566,4 +569,34 @@ def menuNuevoGramaticaDos():
             ManejadorGramaticaDos.alerta("No se encontro la Gramtica Tipo 2 :(")
                     
    
-        
+def menu_validarCadena():
+    nombre = setNombreGramticaDos()
+    buscado = ManejadorAutomaPila.search_automataGramatica(nombre.strip())
+    if buscado == True:
+        while True:
+            print("------------------Validar Cadena-----------------------")
+            print("|                                                     |")
+            print("| 1.Ingresar Cadena                                   |")
+            print("| 2.Resultado                                         |")
+            print("| 3.Reportes                                          |")
+            print("|   SALIR                                             |")
+            print("|                                                     |")
+            print("-------------------------------------------------------")
+            print("")
+            print(">> ",end="")
+            opcion = input()
+            opcion = opcion.strip()
+            if opcion == "1":
+                os.system("cls")
+                ManejadorAutomaPila.validar_Cadena(nombre)
+            elif opcion == "2":
+                os.system("cls")
+            elif opcion == "3":
+                os.system("cls")
+            elif opcion.lower() == "salir":
+                break
+            else:
+                os.system("cls")
+            
+    else:
+        ManejadorGramaticaDos.alerta("No se encontro la Gramtica Tipo 2 :(")

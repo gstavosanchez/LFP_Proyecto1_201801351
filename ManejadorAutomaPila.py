@@ -76,7 +76,7 @@ def new_automataPila(nombreGramatica,nombreAutomata):
     gramatica = ManejadorGramaticaDos.getObjeto(nombreGramatica)
     if gramatica != None:
         if duplicate_data(nombreAutomata) == False:
-            nuevoAutomata = AutomataPila(nombreAutomata,[],[],"","",{},[],[],"")
+            nuevoAutomata = AutomataPila(nombreAutomata,[],[],"","",{},[],[],"",nombreGramatica)
             listaAutomataPila.append(nuevoAutomata)
             set_datosAutomata(nombreAutomata,nombreGramatica)
         else:
@@ -380,4 +380,240 @@ def open_image(direccion):
     except IndexError as e:
         alerta(e)
     
+# Metodos para validar Cadena
+def search_automataGramatica(nombre):
+    nombre = nombre.strip()
+    for valor in listaAutomataPila:
+        if valor.getGramatica() == nombre:
+            return True
+    return False
+
+def get_AutomataGramtica(nombre):
+    nombre = nombre.strip()
+    for valor in listaAutomataPila:
+        if valor.getGramatica() == nombre:
+            return valor
+    return None
+
+def getCadena():
+    os.system("cls")
+    print("-----------------------Validar-------------------------")
+    print("| Ingrese Cadena:                                     |")
+    print("-------------------------------------------------------")
+    print("")
+    print(">> ",end="")
+    cadena = input()
+    cadena = cadena.strip()
+    return cadena
+
+def validar_Cadena(nombre):
+    lam = "λ"
+    nombre = nombre.strip()
+    automata = get_AutomataGramtica(nombre)
+    if automata != None:
+        entrada = getCadena()
+        entradaAux = entrada
+        gramatica = ManejadorGramaticaDos.getObjeto(nombre)
+        inicio = gramatica.getNoTerminalInicial()
+        pila = []
+        x = 0
+        try:
+            reporte = ""
+            txtPila = ""
+            txtTran = ""
+            pila.append(lam)
+            txtPila = get_textoPila(pila)
+            sacado = pila.pop()
+            buscar = f"{lam},{sacado};p,#"
+            estado,insertar,cadeComple = get_TrancisionPila(automata,"i",buscar)#1
+            txtTran = "(i,"+cadeComple+")"
+            reporte += f"{txtPila} $ {entradaAux} $ {txtTran}\n"
+            if estado != None and insertar != None:
+                pila = insert_Pila(pila,insertar)
+                txtPila = get_textoPila(pila) 
+                buscar = f"{lam},{lam};q,{inicio}"
+                estado,insertar,cadeComple = get_TrancisionPila(automata,estado,buscar)#2
+                txtTran = "("+estado+","+cadeComple+")"
+                reporte += f"{txtPila} $ {entradaAux} $ {txtTran}\n"
+                if estado != None:
+                    pila = insert_Pila(pila,insertar)                    
+                    listaCadena = entrada.split(" ")
+                    print("Estado actual de la pila:",pila)
+                    print("Ultimo que se inserto:",insertar," Estado estoy:",estado) 
+                    while True:
+                        txtPila = get_textoPila(pila)
+                        txtTran = "("+estado+","+cadeComple+")"
+                        reporte += f"{txtPila} $ {entradaAux} $ {txtTran}\n"
+                        if x != len(listaCadena):
+                            print("x:",x)                                
+                            letra = listaCadena[x]
+                        elif x == len(listaCadena):
+                            letra == "--------"
+                        # Ultima letra de la pila
+                        ultima = get_ultimo(pila)
+                        print("-----------")
+                        print("Letra Actual:",letra)
+                        print("Ultima letra de la pila:",ultima)
+                        if ultima != None:
+                            #Verificar si ultimo es igual a primera letra de la cadena
+                            if ultima == "#": 
+                                sacado = pila.pop()
+                                buscar = f"{lam},{ultima};"
+                                estado,insertar,cadeComple = get_TrancisionPila(automata,estado,buscar)#3
+                                if estado != None and insertar != None:
+                                    print("Se saco de la pila:",sacado)
+                                    print("Estado actual de la pila:",pila)
+                                    print("Ultimo que se inserto:",insertar," Estado estoy:",estado)
+                                    print("Estado actual de la cadena:",entradaAux)
+                                print("Salio por el #")
+                                break
+                            elif ultima != letra:
+                                # Regresa cuantas coincidencias hay con esa transicion
+                                #tran = f"{lam},{ultima};{estado}"
+                                tran = f"{lam},{ultima};"
+                                numero = get_No_repetidos(automata,tran)
+                                if numero == 1:
+                                    # Hacer Pop a la Pila
+                                    sacado = pila.pop()
+                                    #Auxiliar de insertar
+                                    auxInsert = get_EspecificoTrancisionPila(automata,tran)
+                                    # Generar Cadena para la insersion de pila
+                                    buscar = f"{lam},{sacado};{estado},{auxInsert}"
+                                    estado,insertar,cadeComple = get_TrancisionPila(automata,estado,buscar)#4                                   
+                                    if estado != None:
+                                        pila = insert_Pila(pila,insertar)
+                                        print("Se saco de la pila:",sacado)
+                                        print("Estado actual de la pila:",pila)
+                                        print("Ultimo que se inserto:",insertar," Estado estoy:",estado)
+                                        print("Estado actual de la cadena:",entradaAux)
+                                    else:
+                                       #alerta("Se genero mal la cadena")
+                                       print("se genero mal la cadena")
+                                       break # Revisar para eliminar este break 
+                                elif numero > 1:
+                                    #Hacer Pop la Pila
+                                    sacado = pila.pop()
+                                    # Generar Cadena para insertar en la pila, hay mas de dos concidencias ser mas especifico que se quiere
+                                    buscar = f"{lam},{sacado};{estado},{letra}"
+                                    estado,insertar,cadeComple = get_TrancisionPila(automata,estado,buscar)#5
+                                    if estado != None and insertar != None:
+                                        pila = insert_Pila(pila,insertar)
+                                        print("Se saco de la pila:",sacado)
+                                        print("Estado actual de la pila:",pila)
+                                        print("Ultimo que se inserto:",insertar," Estado estoy:",estado)
+                                        print("Estado actual de la cadena:",entradaAux)
+                                    else:
+                                       #alerta("Se genero mal la cadena")
+                                        print("-->Error: No se encontro la transicion<--")
+                                        print("Se saco de la pila:",sacado)
+                                        print("Estado actual de la pila:",pila)
+                                        print("Ultimo que se inserto:",insertar," Estado estoy:",estado)
+                                        print("Estado actual de la cadena:",entradaAux)
+                                        break # Revisar para eliminar este break 
+                                else:
+                                    #alerta("Malos parametros")
+                                    print("No se genero bien la consulta de las veces de repetir")
+                                    break
+                            elif ultima == letra:
+                                #Si hay coicidencia sacara de la pila uno y pasar a la siguiete cadena
+                                sacado = pila.pop()
+                                buscar = f"{sacado},{sacado};"
+                                estado,insertar,cadeComple = get_TrancisionPila(automata,estado,buscar)#6
+                                entradaAux = entradaAux.replace(letra,"",1)
+                                print("Se saco de la pila:",sacado)
+                                print("Estado actual de la pila:",pila)
+                                print("Estado actual de la cadena:",entradaAux)
+                                print("Estado en que estoy:",estado)
+                                x +=1
+                        else:
+                            break
+                        
+                        # if x == len(listaCadena):
+                        #     print("salio por el tamano")
+                    
+                    print(reporte)    #     break        
+        except IndexError as e:
+            print(e)
+            #alerta(e)
+    else:
+        alerta("No se encontro el Automata de Pila")
+
+
+def get_TrancisionPila(automata,clave,buscado):
+    diccionario = automata.getTrancisiones()
+    for key,value in diccionario.items():
+        if key == clave:
+            lista = value
+            for cadena in lista:
+                if cadena.count(buscado) == 1:
+                    nuevaCadena = cadena
+                    nuevaCadena = nuevaCadena.strip()
+                    cadena = cadena.split(";")
+                    paretA = cadena[0]
+                    parteB = cadena[1]
+                    parteB = parteB.split(",")
+                    estado = parteB[0]
+                    insePila = parteB[1]
+                    insePila = insePila.strip()
+                    return estado,insePila,nuevaCadena
+    return None,None,None
+
+def get_EspecificoTrancisionPila(automata,buscado):
+    diccionario = automata.getTrancisiones()
+    for key,value in diccionario.items():
+        if key == "q":
+            lista = value
+            for cadena in lista:
+                if cadena.count(buscado) == 1:
+                    nuevaCadena = cadena
+                    cadena = cadena.split(";")
+                    paretA = cadena[0]
+                    parteB = cadena[1]
+                    parteB = parteB.split(",")
+                    estado = parteB[0]
+                    insePila = parteB[1]
+                    insePila = insePila.strip()
+                    return insePila
+    return None
+
+def get_No_repetidos(automata,buscado):
+    diccionario = automata.getTrancisiones()
+    buscado = buscado.strip()
+    x = 0
+    print("buscado:"+buscado)
+    for key,value in diccionario.items():
+        if key == "q":
+            lista = value
+            for cadena in lista:
+                if cadena.find(buscado) -1:
+                    x +=1
+    return x
+                
+
+def insert_Pila(pila,cadena):
+    try:
+        cadena = cadena.split(" ")
+        for valor in reversed(cadena):
+            #print(valor)
+            pila.append(valor)
+        return pila
+    except IndexError as e:
+        alerta(e)
+        return None
     
+def get_ultimo(lista):
+    for i in range(len(lista)):
+        if i == len(lista) - 1:
+            return(lista[i])
+    return None
+
+
+def get_textoPila(lista):
+    texto = ""
+    for i in range(len(lista)):
+        letra = lista[i]
+        if i == len(lista) - 1:
+            texto += letra
+        else:
+            texto += letra+" "
+    return texto

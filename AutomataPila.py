@@ -8,8 +8,9 @@ class AutomataPila():
     trancisiones = {}
     pila = []
     imagen = ""
+    gramatica = ""
     
-    def __init__(self,nombre,estado,alfabeto,estadoInicial,estadosAceptacion,trancisiones,simbolosDePila,pila,imagen):
+    def __init__(self,nombre,estado,alfabeto,estadoInicial,estadosAceptacion,trancisiones,simbolosDePila,pila,imagen,gramatica):
         self.nombre = nombre
         self.estado = estado
         self.alfabeto = alfabeto
@@ -19,7 +20,13 @@ class AutomataPila():
         self.simbolosDePila = simbolosDePila
         self.pila = pila
         self.imagen = imagen
+        self.gramatica = gramatica
 
+    def getGramatica(self):
+        return self.gramatica
+    def setGramatica(self,gramatica):
+        self.gramatica = gramatica
+    
     def getImagen(self):
         return self.imagen
     def setImagen(self,imagen):
