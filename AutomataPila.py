@@ -9,8 +9,9 @@ class AutomataPila():
     pila = []
     imagen = ""
     gramatica = ""
+    cadena = {}
     
-    def __init__(self,nombre,estado,alfabeto,estadoInicial,estadosAceptacion,trancisiones,simbolosDePila,pila,imagen,gramatica):
+    def __init__(self,nombre,estado,alfabeto,estadoInicial,estadosAceptacion,trancisiones,simbolosDePila,pila,imagen,gramatica,cadena):
         self.nombre = nombre
         self.estado = estado
         self.alfabeto = alfabeto
@@ -21,6 +22,7 @@ class AutomataPila():
         self.pila = pila
         self.imagen = imagen
         self.gramatica = gramatica
+        self.cadena = cadena
 
     def getGramatica(self):
         return self.gramatica

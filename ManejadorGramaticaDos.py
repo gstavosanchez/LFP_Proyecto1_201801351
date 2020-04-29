@@ -373,7 +373,9 @@ def borrar_cadena(nombre):
                     os.system("cls")
             else:
                 os.system("cls")
-                break  
+                break
+        if recursivo_mejorado(gramatica) == True:
+            tranformar_gramtica(gramatica)      
             
     else:
         os.system("cls")
