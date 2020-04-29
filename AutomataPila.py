@@ -23,6 +23,11 @@ class AutomataPila():
         self.imagen = imagen
         self.gramatica = gramatica
         self.cadena = cadena
+        
+    def getCadena(self):
+        return self.cadena
+    def setCadena(self,cadena):
+        self.cadena = cadena
 
     def getGramatica(self):
         return self.gramatica
