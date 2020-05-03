@@ -440,8 +440,8 @@ def validar_Cadena(nombre):
                 reporte = ""
                 txtPila = ""
                 txtTran = ""
-                reporte += f"{entradaCompleta} $\n"
-                reporte += "PILA $ ENTRADA $ TRANSICIÓN \n"
+                reporte += f"Cadena:{entradaCompleta} $\n"
+                reporte += "PILA $ ENTRADA $ TRANSICION \n"
                 pila.append(lam)
                 txtPila = get_textoPila(pila)
                 sacado = pila.pop()
@@ -515,6 +515,10 @@ def validar_Cadena(nombre):
                                 #print("Estado actual de la cadena:",entradaAux)
                                 #print("Salio por el #")
                                 if len(entradaAux.strip()) == 0 or esta_vacia(entradaAux) == True:
+                                    txtPila = get_textoPila(pila)
+                                    txtTran = "(q,"+cadeComple+")"
+                                    reporte += f"{txtPila} $ {entradaAux} $ {txtTran}\n"
+                                    reporte += f"CADENA VALIDA $\n"
                                     cadena_mensaje(entradaCompleta,"La cadena SI es valida")
                                 else:
                                     cadena_mensaje(entradaCompleta,"La cadena NO es valida")
@@ -723,23 +727,17 @@ def esta_vacia(data_structure):
 
 def get_rutaAutomataPila(nombre):
     nombre = nombre.strip()
-    automata = get_objeto(nombre)
+    automata = get_AutomataGramtica(nombre)
     if automata != None:
         root = Tk()
-        root.filename =  filedialog.asksaveasfilename(initialdir = "/",title = "Select CSV file",filetypes = (("csv files","*.csv"),("all files","*.*")))
+        root.filename =  filedialog.asksaveasfilename(initialdir = "/",title = "Select CSV file",filetypes = (("CSV files","*.csv"),("all files","*.*")))
         ruta = ""
         ruta = root.filename
         comando  = ""
         if is_empty(ruta.strip()) == False:
-            ruta_imagen = f"{ruta}.png"
-            ruta_dot = f"{ruta}.dot"
+            ruta_csv = f"{ruta}.csv"
             root.destroy()
-            comando = 'dot -Tpng "%s" -o "%s"'%(ruta_dot,ruta_imagen)
-            #print("rutaImagen:"+ruta_imagen)
-            #print("RutaDos:"+ruta_dot)
-            update_imagen(automata,ruta_imagen)
-            generate_Graphviz(nombre,ruta_dot)
-            wirteArvhico_ejutar(comando)
+            generar_CSVAutomata(nombre,ruta_csv)
         else:
             alerta("No escribio ningun nombre")
             root.destroy()
@@ -747,3 +745,72 @@ def get_rutaAutomataPila(nombre):
     else:
         alerta("No se encontro el automata ): ")
         return None
+    
+def generar_CSVAutomata(nombre,ruta_csv):
+    nombre = nombre.strip()
+    automata = get_AutomataGramtica(nombre)
+    if automata != None:
+        diccionario = automata.getCadena()
+        texto = ""
+        for key,value in diccionario.items():
+            texto += value +"\n"
+        #texto = texto.replace("$","=")
+        #texto = texto.replace("("," ")
+        #texto = texto.replace(")"," ")
+        writeArchivo(texto,ruta_csv)
+        
+
+def generarArbol(automata,cadena):
+    gramaticaName = automata.getGramatica()
+    gramatica = ManejadorGramaticaDos.getObjeto(gramaticaName)
+    cadena = cadena.strip()
+    entrada = cadena
+    c = 0
+    t = 0
+    if gramatica != None:
+        try:
+            inicio = gramatica.getNoTerminalInicial()
+            
+            cadena = cadena.split(" ")
+        except IndexError as e:
+            alerta(e)
+    else:
+        alerta("No se encontro la gramatica")
+
+def es_mayuscula(letra):
+    if letra == letra.upper():
+        return True
+    elif letra == letra.lower():
+        return False
+
+def es_numero(parametro):
+    return (parametro.isnumeric())
+
+def get_proudccion(gramatica,buscado):
+    try:
+        diccionario = gramatica.getProduccion()
+        buscado = buscado.split(" ")
+        ladoA = buscado[0]
+        ladoB = buscado[1]
+        if size_diccionario(diccionario) == 0:
+            diccionario = gramatica.getProTransformada()
+        for key,value in diccionario.items():
+            if key == ladoA:
+                lista = value
+                for cadena in lista:
+                    cadena = cadena.strip()
+                    if cadena.find(ladoB) == 0:
+                        return cadena
+        return None
+    except IndexError as e:
+        alerta(e)
+        return None
+    
+    
+    
+
+def size_diccionario(diccionario):
+    x = 0
+    for key,value in diccionario.items():
+        x +=1
+    return x

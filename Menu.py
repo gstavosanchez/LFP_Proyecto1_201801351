@@ -593,7 +593,9 @@ def menu_validarCadena():
                 os.system("cls")
             elif opcion == "3":
                 os.system("cls")
+                ManejadorAutomaPila.get_rutaAutomataPila(nombre)
             elif opcion.lower() == "salir":
+                os.system("cls")
                 break
             else:
                 os.system("cls")
