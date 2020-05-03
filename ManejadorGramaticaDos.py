@@ -296,12 +296,14 @@ def exist(gramatica,cadena):
         return False
     
 # Verificar si es recursiva
-def es_recursivo(gramatica,cadena):
+def es_recursivo(gramatica,cadena,key):
     if cadena != "epsilon":
         for i in range(len(cadena)):
             if i == 0:
                 #print("Metodo Recursivo: " +cadena[i])
-                if datos_Duplicados_Any(cadena[i],gramatica.getNoTerminal()) == True:
+                # if datos_Duplicados_Any(cadena[i],gramatica.getNoTerminal()) == True:
+                #     return True
+                if key == cadena[i]:
                     return True
         return False
     else:
@@ -320,7 +322,7 @@ def recursivo_mejorado(gramatica):
                 if key == inicio and len(cadena) == 1 and datos_Duplicados_Any(cadena,gramatica.getNoTerminal()) == True:
                     print("")
                 else:
-                    if es_recursivo(gramatica,cadena) == True:
+                    if es_recursivo(gramatica,cadena,key) == True:
                         return True             
         return False
     else:
@@ -437,7 +439,7 @@ def tranformar_gramtica(gramatica):
                 else:
                     #Agregar los nuevos NO Terminales AP,ZP
                     no_terminal = key+"P"
-                    if es_recursivo(gramatica,cadena) == True:
+                    if es_recursivo(gramatica,cadena,key) == True:
                         if datosDuplicadosAnyList(no_terminal,gramatica.getNoTerminal()) == False:
                             listaTerminal = gramatica.getTerminal()
                             listaNoTerminal = gramatica.getNoTerminal()
